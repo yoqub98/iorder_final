@@ -82,7 +82,13 @@ function Inventory() {
       });
   };
 
-
+  const handleDelete = (id) => {
+    firebase
+      .firestore()
+      .collection('items')
+      .doc(id)
+      .delete();
+  };
 
 
 
@@ -103,6 +109,7 @@ function Inventory() {
             <Button onClick={() => showModal(record)}>Edit</Button>
           )}
         />
+        
       </Table>
       <Modal
         title={selectedItem ? 'Edit Item' : 'Add Item'}

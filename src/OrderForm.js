@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './index.css';
 import { PlusOutlined } from '@ant-design/icons';
-import { Form, Radio, Cascader, Row, Col, Statistic, Option, InputNumber, Select, DatePicker, Button, Layout, Typography} from 'antd';
+import { Form, Radio,Card, Cascader, Row, Col, Statistic, Option, InputNumber, Select, DatePicker, Button, Layout, Typography} from 'antd';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
@@ -129,6 +129,14 @@ const handlePaymentStatusChange = (e) => {
   setOrderlist ({...orderlist, pay_status : e.target.value})
 }
 
+const TotalCard = () => {
+  return (
+    <Card>
+
+      <Statistic title="Итого"  value={orderlist.total} />
+    </Card>
+  );
+};
 
 
 
@@ -201,32 +209,31 @@ const handlePaymentStatusChange = (e) => {
   <Form.Item label="Количество">
         <InputNumber onChange={handleAmount} />
 </Form.Item>
-<Form.Item label="Payment Status">
+<Form.Item label="Статус оплаты">
         <Radio.Group onChange={handlePaymentStatusChange} value={orderlist.pay_status}>
-          <Radio value="paid">Paid</Radio>
-          <Radio value="pending">Pending</Radio>
+          <Radio value="paid">Оплачено</Radio>
+          <Radio value="pending">Не оплачено</Radio>
         </Radio.Group>
       </Form.Item>
-<Form.Item>
 
-    
-    <Statistic title="Итого"  value={orderlist.total} />
-   
-        </Form.Item>
-        <Form.Item>
+        <Form.Item label="Статус заказа">
         <Radio.Group  onChange={handleStatus} defaultValue="a" buttonStyle="solid">
       <Radio.Button value="in progress">В процессе</Radio.Button>
       <Radio.Button value="delivered">Доставлено</Radio.Button>
+      <Radio.Button value="ready to ship">Готов к отгрузке</Radio.Button>
    
     </Radio.Group>
         </Form.Item>
    <Form.Item>
   
-      <Button type="primary" onClick={handleSubmit}>Test</Button>
+    
     
     
     </Form.Item>
-     
+    <Form.Item>
+     <TotalCard></TotalCard>
+     </Form.Item>
+     <Button type="primary" onClick={handleSubmit}>Test</Button>
    </Form>
    </div>
   )
