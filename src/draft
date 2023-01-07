@@ -1,0 +1,102 @@
+items={[
+            {
+              key: '1',
+              icon:  <FileAddOutlined style={{ fontSize: '18px', }}/>,
+              label: 'Добавить Заказ',
+            },
+            {
+              key: '2',
+              icon: <BarsOutlined style={{ fontSize: '18px', }}/>,
+              label: 'Активные заказ',
+            },
+            {
+              key: '3',
+              icon: <CodeSandboxOutlined style={{ fontSize: '18px', }}  />,
+              label: 'Инвентарь',
+            },
+          ]};
+
+
+
+
+
+
+
+
+
+
+
+
+import React, { useState } from 'react';
+import {  CaretLeftOutlined,  CaretRightOutlined,  CodeSandboxOutlined,  FileAddOutlined,  BarsOutlined,} from '@ant-design/icons';
+import { Layout, Menu, theme, Typography, } from 'antd';
+import OrderForm from './OrderForm';
+import ActiveOrders from './ActiveOrders';
+import { BrowserRouter as Router,Routes, Route, Link } from "react-router-dom";
+import Inventory from './Inventory'
+
+const { Header, Sider, Content } = Layout;
+const RouterApp  extends Component  {
+
+  
+  const [collapsed, setCollapsed] = useState(false);
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
+  return (
+    <Router>
+    <Layout>
+      <Sider trigger={null} collapsible collapsed={collapsed}>
+        <div className="logo" />
+        <Menu
+          theme="dark"
+          mode="inline"
+          defaultSelectedKeys={['1']}
+          >
+            <Menu.Item key="1">
+              <FileAddOutlined style={{ fontSize: '18px', }}/><span>Добавить заказ</span>
+              <Link to="/" />
+              </Menu.Item>
+
+            <Menu.Item key="2">
+              <BarsOutlined style={{ fontSize: '18px', }}/><span> Активные заказы</span>
+              <Link to="/active_orders" />
+              </Menu.Item>
+
+            <Menu.Item key="3"><CodeSandboxOutlined style={{ fontSize: '18px', }}/><span>Инвентарь</span>
+            <Link to="/inventory" />
+            </Menu.Item>
+          </Menu>
+      
+      </Sider>
+      <Layout className="site-layout">
+        <Header
+          style={{
+            padding: 0,
+            background: colorBgContainer,
+          }}
+        >
+          {React.createElement(collapsed ?   CaretRightOutlined : CaretLeftOutlined, {
+            className: 'trigger',
+            onClick: () => setCollapsed(!collapsed),
+          })}
+
+        </Header>
+       
+        <Content style={{ margin: '24px 16px', padding: 24,  minHeight: 280, background: colorBgContainer, }}
+        >
+          <Layout>
+          <Routes>
+          <Route exact path="/" component={OrderForm} />
+            <Route path="/active_orders" component={ActiveOrders} />
+            <Route path="/inventory" component={Inventory} />
+            </Routes>
+      </Layout>
+        </Content>
+      </Layout>
+    </Layout>
+    </Router>
+  );
+  
+};
+export default RouterApp ;
