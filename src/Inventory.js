@@ -25,7 +25,7 @@ function Inventory() {
   const [items, setItems] = useState([]);
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
-
+  const [selectedItem, setSelectedItem] = useState(null);
   useEffect(() => {
     const unsubscribe = firebase
       .firestore()
@@ -40,8 +40,9 @@ function Inventory() {
     return unsubscribe;
   }, []);
 
-  const showModal = () => {
+  const showModal = (item) => {
     setVisible(true);
+      setSelectedItem(item);
   };
 
   const handleCancel = () => {
@@ -64,6 +65,28 @@ function Inventory() {
       });
   };
 
+  const handleEdit = () => {
+    form
+      .validateFields()
+      .then((values) => {
+        form.resetFields();
+        firebase
+          .firestore()
+          .collection('inventory')
+          .doc(selectedItem.id)
+          .set(values, { merge: true });
+        setVisible(false);
+      })
+      .catch((info) => {
+        console.log('Validate Failed:', info);
+      });
+  };
+
+
+
+
+
+
   return (
     <div>
       <Button type="primary" onClick={showModal}>
@@ -73,14 +96,21 @@ function Inventory() {
         <Column title="Name" dataIndex="name" key="name" />
         <Column title="Quantity" dataIndex="quantity" key="quantity" />
         <Column title="Price" dataIndex="price" key="price" />
+        <Column
+          title="Action"
+          key="action"
+          render={(text, record) => (
+            <Button onClick={() => showModal(record)}>Edit</Button>
+          )}
+        />
       </Table>
       <Modal
-        title="Add Item"
+        title={selectedItem ? 'Edit Item' : 'Add Item'}
         visible={visible}
         onCancel={handleCancel}
-        onOk={handleCreate}
+        onOk={selectedItem ? handleEdit : handleCreate}
       >
-        <Form form={form}>
+     <Form form={form} initialValues={selectedItem}>
           <Form.Item name="name" label="Name" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
