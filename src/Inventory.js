@@ -55,7 +55,7 @@ function Inventory() {
         form.resetFields();
         firebase
           .firestore()
-          .collection('items')
+          .collection('inventory')
           .add(values);
         setVisible(false);
       })
