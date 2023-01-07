@@ -9,7 +9,7 @@ import Inventory from './Inventory';
 import OrderForm from './OrderForm';
 
 const { Header, Content, Footer, Sider } = Layout;
-const SubMenu = Menu.SubMenu;
+
 
 class RouterApp extends Component {
    state = {
