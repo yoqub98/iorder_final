@@ -1,7 +1,7 @@
 import { DeleteOutlined } from "@ant-design/icons";
 import { Badge, Button, Space, Table, Typography } from "antd";
 import { initializeApp } from "firebase/app";
-
+import { Spin } from 'antd';
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import {
@@ -43,11 +43,26 @@ function ActiveOrders() {
     {
       title: "Дата",
       dataIndex: "date",
+      sorter: (a, b) => {
+        // Convert the date strings to Date objects
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+      
+        // Compare the dates and return a value that determines their order
+        if (dateA < dateB) return -1;
+        if (dateA > dateB) return 1;
+        return 0;
+      },
     },
     {
       title: "Заказчик",
       dataIndex: "client",
-      sorter: (a, b) => a.title - b.title,
+      sorter: (a, b) => {
+        // Compare the client names and return a value that determines their order
+        if (a.client < b.client) return -1;
+        if (a.client > b.client) return 1;
+        return 0;
+      },
     },
     {
       title: "Продукт",
@@ -137,6 +152,7 @@ function ActiveOrders() {
 
   const fetchPost = async () => {
     await getDocs(collection(db, "orders")).then((querySnapshot) => {
+      setLoading(false)
       const newData = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
@@ -148,7 +164,7 @@ function ActiveOrders() {
   };
 
   const [bordered, setBordered] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [size, setSize] = useState("large");
   const [expandable, setExpandable] = useState(defaultExpandable);
   const [showTitle, setShowTitle] = useState(false);
@@ -165,6 +181,9 @@ function ActiveOrders() {
   const [orders, setOrders] = useState([]);
   const [datalenght, setLengh] = useState(0);
   useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
     fetchPost();
     setLengh(orders.length);
   }, []);
@@ -207,6 +226,7 @@ function ActiveOrders() {
   }
   return (
     <>
+        <Spin size="large" spinning={loading}>
       <Table
         {...tableProps}
         pagination={{
@@ -216,6 +236,7 @@ function ActiveOrders() {
         dataSource={hasData ? data : []}
         scroll={scroll}
       />
+      </Spin>
     </>
   );
 }
