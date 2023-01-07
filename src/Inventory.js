@@ -5,7 +5,7 @@ const { Title } = Typography;
 function Inventory () {
     return (
     <div>
-   <Title>Inventory</Title>
+   <Title>Inventory test</Title>
    </div>
   )
 }
