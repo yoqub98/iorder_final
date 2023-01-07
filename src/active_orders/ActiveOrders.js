@@ -1,4 +1,4 @@
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Badge, Button, Space, Table, Typography } from "antd";
 import { initializeApp } from "firebase/app";
 import { Spin } from 'antd';
@@ -39,6 +39,7 @@ const defaultFooter = () => "Here is footeer";
 
 function ActiveOrders() {
   const [orderstatus, setOrderStatus] = useState("");
+
   const columns = [
     {
       title: "Дата",
@@ -53,39 +54,34 @@ function ActiveOrders() {
         if (dateA > dateB) return 1;
         return 0;
       },
+      defaultSortOrder: "descend",
     },
     {
       title: "Заказчик",
       dataIndex: "client",
-      sorter: (a, b) => {
-        // Compare the client names and return a value that determines their order
-        if (a.client < b.client) return -1;
-        if (a.client > b.client) return 1;
-        return 0;
-      },
+      sorter: (a, b) => a.title - b.title,
     },
     {
       title: "Продукт",
       dataIndex: "product",
       filters: [
-        {
-          text: "Соль",
-          value: "Соль",
-        },
-        {
-          text: "Сахар",
-          value: "Сахар",
-        },
+        { text: "Сашет-бел", value: "Сашет-бел" },
+        { text: "Сашет-корч", value: "Сашет-корч" },
+        { text: "Стик-корч", value: "Стик-корч" },
+        { text: "Стик-бел", value: "Стик-бел" },
+        { text: "Соль", value: "Соль" },
       ],
-      onFilter: (value, record) => record.product.indexOf(value) === 0,
+      onFilter: (value, record) => record.product === value,
     },
     {
       title: "Количество",
       dataIndex: "quantity",
+      sorter: (a, b) => a.quantity - b.quantity,
     },
     {
       title: "Итого",
       dataIndex: "total",
+      sorter: (a, b) => a.quantity - b.quantity,
     },
     {
       title: "Статус",
@@ -101,6 +97,19 @@ function ActiveOrders() {
       ),
     },
     {
+      title: "Статус",
+      dataIndex: "pay_status",
+      render: (text, row, index) => (
+        <span>
+          <Badge status={row.pay_status === "paid" ? "success" : "warning"} />{" "}
+          <Space size="large" />
+          <Text type={row.pay_status === "paid" ? "success" : "warning"}>
+            {row.pay_status}
+          </Text>
+        </span>
+      ),
+    },
+    {
       title: "Action",
       key: "action",
       sorter: true,
@@ -111,18 +120,18 @@ function ActiveOrders() {
             icon={<DeleteOutlined style={{ fontSize: "16px", color: "red" }} />}
             type="text"
           >
-            Удалить
+           
           </Button>
 
           <Space>
             <Button
               onClick={handleDelete.bind(this, row.id)}
               icon={
-                <DeleteOutlined style={{ fontSize: "16px", color: "red" }} />
+                <EditOutlined style={{ fontSize: "16px", color: "black" }} />
               }
               type="text"
             >
-              Edit
+            
             </Button>
           </Space>
         </Space>
