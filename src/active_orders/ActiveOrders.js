@@ -42,26 +42,38 @@ function ActiveOrders() {
       {
          title: 'Дата',
          dataIndex: 'date',
+         sorter: (a, b) => {
+          // Convert the date strings to Date objects
+          const dateA = new Date(a.date);
+          const dateB = new Date(b.date);
+        
+          // Compare the dates and return a value that determines their order
+          if (dateA < dateB) return -1;
+          if (dateA > dateB) return 1;
+          return 0;
+        },
       },
       {
          title: 'Заказчик',
          dataIndex: 'client',
-         sorter: (a, b) => a.title - b.title,
+         sorter: (a, b) => {
+          // Compare the client names and return a value that determines their order
+          if (a.client < b.client) return -1;
+          if (a.client > b.client) return 1;
+          return 0;
+        },
       },
       {
          title: 'Продукт',
          dataIndex: 'product',
          filters: [
-            {
-               text: 'Соль',
-               value: 'Соль',
-            },
-            {
-               text: 'Сахар',
-               value: 'Сахар',
-            },
-         ],
-         onFilter: (value, record) => record.product.indexOf(value) === 0,
+          { text: "Соль", value: "Соль" },
+          { text: "Сашет-бел", value: "Сашет-бел"  },
+          { text: "Стик-бел", value: "Стик-бел" },
+          
+
+        ],
+        onFilter: (value, record) => record.product === value,
       },
       {
          title: 'Количество',
