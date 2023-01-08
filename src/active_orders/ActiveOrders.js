@@ -88,9 +88,9 @@ function ActiveOrders() {
       dataIndex: "status",
       render: (text, row, index) => (
         <span>
-          <Badge status={row.status === "delivered" ? "success" : "warning"} />{" "}
+          <Badge status={row.status === "доставлено" ? "success" : "warning"} />{" "}
           <Space size="large" />
-          <Text type={row.status === "delivered" ? "success" : "warning"}>
+          <Text type={row.status === "доставлено" ? "success" : "warning"}>
             {row.status}
           </Text>
         </span>
@@ -101,9 +101,9 @@ function ActiveOrders() {
       dataIndex: "pay_status",
       render: (text, row, index) => (
         <span>
-          <Badge status={row.pay_status === "paid" ? "success" : "warning"} />{" "}
+          <Badge status={row.pay_status === "оплачено" ? "success" : "warning"} />{" "}
           <Space size="large" />
-          <Text type={row.pay_status === "paid" ? "success" : "warning"}>
+          <Text type={row.pay_status === "оплачено" ? "success" : "warning"}>
             {row.pay_status}
           </Text>
         </span>

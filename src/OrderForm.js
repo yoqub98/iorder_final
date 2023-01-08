@@ -63,7 +63,9 @@ function OrderForm () {
     };
 
     const handleStatus = (e)=> {
+      
       setOrderlist ({...orderlist, status : e.target.value})
+      console.log( e.target.value)
     }
 
 
@@ -211,16 +213,16 @@ const TotalCard = () => {
 </Form.Item>
 <Form.Item label="Статус оплаты">
         <Radio.Group onChange={handlePaymentStatusChange} value={orderlist.pay_status}>
-          <Radio value="paid">Оплачено</Radio>
-          <Radio value="pending">Не оплачено</Radio>
+          <Radio value="оплачено">Оплачено</Radio>
+          <Radio value="не оплачено">Не оплачено</Radio>
         </Radio.Group>
       </Form.Item>
 
         <Form.Item label="Статус заказа">
         <Radio.Group  onChange={handleStatus} defaultValue="a" buttonStyle="solid">
-      <Radio.Button value="in progress">В процессе</Radio.Button>
-      <Radio.Button value="delivered">Доставлено</Radio.Button>
-      <Radio.Button value="ready to ship">Готов к отгрузке</Radio.Button>
+      <Radio.Button value="в процессе">В процессе</Radio.Button>
+      <Radio.Button value="доставлено">Доставлено</Radio.Button>
+      <Radio.Button value="готов к отгрузке">Готов к отгрузке</Radio.Button>
    
     </Radio.Group>
         </Form.Item>
