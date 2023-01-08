@@ -1,4 +1,4 @@
-import { BarsOutlined, CodeSandboxOutlined, FileAddOutlined } from '@ant-design/icons';
+import { BarsOutlined, CodeSandboxOutlined,PlusSquareOutlined, FileAddOutlined } from '@ant-design/icons';
 
 import Icon from '@ant-design/icons/lib/components/Icon';
 import { Layout, Menu } from 'antd';
@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Link, Route, Routes } from 'react-router-dom';
 import ActiveOrders from './active_orders/ActiveOrders';
 import Inventory from './Inventory';
 import OrderForm from './OrderForm';
-
+import AddProduct from './AddProduct';
 const { Header, Content, Footer, Sider } = Layout;
 
 
@@ -52,6 +52,11 @@ class RouterApp extends Component {
                         <span>Инвентарь</span>
                         <Link to='/inventory' />
                      </Menu.Item>
+                     <Menu.Item key='4'>
+                     <PlusSquareOutlined  style={{ fontSize: '18px' }} />
+                        <span>Добавить продукт</span>
+                        <Link to='/addproduct' />
+                     </Menu.Item>
                   </Menu>
                </Sider>
                <Layout>
@@ -75,6 +80,7 @@ class RouterApp extends Component {
                         <Route exact path='/' element={<OrderForm />} />
                         <Route path='/active_orders' element={<ActiveOrders />} />
                         <Route path='/inventory' element={<Inventory />} />
+                        <Route path='/addproduct' element={<AddProduct />} />
                      </Routes>
                   </Content>
                   <Footer style={{ textAlign: 'center' }}>OrderIt</Footer>
