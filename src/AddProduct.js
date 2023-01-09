@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './index.css';
 import { Form, Input,Modal, Button } from 'antd';
-
+import { DownOutlined } from '@ant-design/icons';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
-
+import Product_types from './ProductTypes';
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
+import { collection, getDocs, 
+} from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCEsm2uX4Ott4vxlH-K_p25xnYPShXv6FI",
@@ -17,45 +21,78 @@ const firebaseConfig = {
   appId: "1:257343919180:web:ffaa88ed28958ff04c90e9",
   measurementId: "G-89DK3S524X"
 };
+const product_types  =[
+    {
+      label: 'Стик',
+      key: '1',
+    },
+    {
+      label: 'Сашет',
+      key: '2',
+    },
+  ];
 
 firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
 
 function AddProduct() {
+
   const [product, setProduct] = useState({
     name: "",
-    price: 0
+    price: 0,
+   
   });
 
+  const [saved_products, setSavedProducts] = useState([]); 
+
+  
   const handleChange = event => {
     setProduct({ ...product, [event.target.name]: event.target.value });
   };
-
 
   function successModal() {
     Modal.success({
       content: (
         <div style={{ textAlign: 'center' }}>
         
-          <p style={{ fontSize: '18px', marginTop: '20px' }}>Item added successfully</p>
+          <p style={{ fontSize: '18px', marginTop: '20px' }}>Товар добален в базу данных!</p>
         </div>
       ),
       
     });
   }
   
-
    async function handleSubmit ()  {
    
     console.log("worked")
     
     const res = await db.collection('products').add(product, {merge:true}).then(() => {
-        successModal()      })
+        successModal() 
+    fetchInfo();     })
       .catch((error) => {
         console.log(error);
       });;
   };
+
+  async function fetchInfo ()  {
+    await getDocs(collection(db, "products")).then((querySnapshot) => {
+      const newData = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      console.log(newData)
+      setSavedProducts(newData); // update saved_products with newData
+    });
+  }
+  
+
+  useEffect(() => {
+   
+    fetchInfo();
+ 
+  }, []);
   return (
+    <div>
     <Form>
       <Form.Item label="Name">
         <Input
@@ -72,12 +109,15 @@ function AddProduct() {
           onChange={handleChange}
         />
       </Form.Item>
+    
       <Form.Item>
         <Button onClick={handleSubmit} type="primary" htmlType="submit">
           Add Product
         </Button>
       </Form.Item>
     </Form>
+    <Product_types data = {saved_products} />
+    </div>
   );
 
 }
