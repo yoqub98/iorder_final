@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './index.css';
-import { Form, Input,Modal, Button, Select, Row, Col, InputNumber } from 'antd';
+import { Form, Input,Modal, Button, Select, Row, Col, InputNumber , Spin} from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
@@ -38,7 +38,7 @@ firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
 
 function AddProduct() {
-
+  const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState({
     name: "",
     price: 0,
@@ -80,10 +80,12 @@ function AddProduct() {
 
   async function fetchInfo ()  {
     await getDocs(collection(db, "products")).then((querySnapshot) => {
+      setLoading(false)
       const newData = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
       }));
+     
       console.log(newData)
       setSavedProducts(newData); // update saved_products with newData
     });
@@ -91,12 +93,14 @@ function AddProduct() {
   
 
   useEffect(() => {
-   
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
     fetchInfo();
  
   }, []);
   return (
-    <div>
+   <div>
     <Form>
     <Form.Item >
   <Row gutter={16}>
@@ -139,8 +143,10 @@ function AddProduct() {
 </Form.Item>
      
     </Form>
+     <Spin size="large" spinning={loading}>
     <Product_types data = {saved_products} />
-    </div>
+    </Spin>
+</div>
   );
 
 }
