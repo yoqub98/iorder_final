@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './index.css';
-import { Form, Input,Modal, Button } from 'antd';
+import { Form, Input,Modal, Button, Select,  InputNumber } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
@@ -40,6 +40,7 @@ function AddProduct() {
   const [product, setProduct] = useState({
     name: "",
     price: 0,
+    status : "",
    
   });
 
@@ -109,7 +110,21 @@ function AddProduct() {
           onChange={handleChange}
         />
       </Form.Item>
-    
+    <Form.Item label="Тип продукта">
+    <Input.Group compact>
+      <Select defaultValue="Option1">
+        <Select value="Стик">Стик</Select>
+        <Select value="Сашет">Сашет</Select>
+      </Select>
+      <Input
+        style={{
+          width: '50%',
+        }}
+        defaultValue="input content"
+      />
+      <InputNumber />
+    </Input.Group>
+    </Form.Item>
       <Form.Item>
         <Button onClick={handleSubmit} type="primary" htmlType="submit">
           Add Product
