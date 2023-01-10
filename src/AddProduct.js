@@ -105,7 +105,7 @@ function AddProduct() {
     <Form.Item >
   <Row gutter={16}>
     <Col span={12}>
-      <Form.Item label="Name">
+      <Form.Item label="Наименование продукта">
         <Input
           name="name"
           value={product.name}
@@ -114,7 +114,7 @@ function AddProduct() {
       </Form.Item>
     </Col>
     <Col span={12}>
-      <Form.Item label="Price">
+      <Form.Item label="Цена">
         <Input
           name="price"
           type="number"
@@ -125,7 +125,7 @@ function AddProduct() {
     </Col>
   </Row>
 </Form.Item>
-      <Form.Item label="Тип продукта">
+      <Form.Item label="Тип упаковки">
   <Row gutter={16}>
     <Col span={8}>
       <Select
