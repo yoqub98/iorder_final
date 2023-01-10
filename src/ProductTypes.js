@@ -10,7 +10,7 @@ const Product_types = (props) => {
         <Col key={item.id} span={8} >
           <Card style={{ marginBottom: '18px' }} bordered={false} headStyle={{ borderColor: '#1890ff' , borderWidth: 1.5, backgroundColor: '#fafafa'}} type="inner" title={item.name}>
            Цена : {item.price} сум/шт
-           <Meta style={{ marginTop: '12px' }} description={item.type}>
+           <Meta style={{ marginTop: '12px' }} description={"Тип упаковки : " + " " + item.type}>
            
            </Meta></Card>
         </Col>
