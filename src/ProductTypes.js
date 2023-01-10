@@ -7,7 +7,7 @@ const Product_types = (props) => {
     <Row gutter={16}>
       {data.map((item) => (
         <Col key={item.id} span={8} >
-          <Card  bordered={false} headStyle={{ borderColor: '#1890ff' , borderWidth: 1.5, backgroundColor: '#fafafa'}} type="inner" title={item.name}>
+          <Card style={{ marginBottom: '18px' }} bordered={false} headStyle={{ borderColor: '#1890ff' , borderWidth: 1.5, backgroundColor: '#fafafa'}} type="inner" title={item.name}>
            Цена : {item.price} сум/шт</Card>
         </Col>
       ))}

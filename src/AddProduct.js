@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './index.css';
-import { Form, Input,Modal, Button, Select,  InputNumber } from 'antd';
+import { Form, Input,Modal, Button, Select, Row, Col, InputNumber } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
@@ -30,6 +30,8 @@ const product_types  =[
       label: 'Сашет',
       key: '2',
     },
+   
+
   ];
 
 firebase.initializeApp(firebaseConfig);
@@ -40,7 +42,7 @@ function AddProduct() {
   const [product, setProduct] = useState({
     name: "",
     price: 0,
-    status : "",
+    type : "",
    
   });
 
@@ -51,6 +53,7 @@ function AddProduct() {
     setProduct({ ...product, [event.target.name]: event.target.value });
   };
 
+ 
   function successModal() {
     Modal.success({
       content: (
@@ -95,6 +98,9 @@ function AddProduct() {
   return (
     <div>
     <Form>
+    <Form.Item >
+  <Row gutter={16}>
+    <Col span={12}>
       <Form.Item label="Name">
         <Input
           name="name"
@@ -102,6 +108,8 @@ function AddProduct() {
           onChange={handleChange}
         />
       </Form.Item>
+    </Col>
+    <Col span={12}>
       <Form.Item label="Price">
         <Input
           name="price"
@@ -110,26 +118,26 @@ function AddProduct() {
           onChange={handleChange}
         />
       </Form.Item>
-    <Form.Item label="Тип продукта">
-    <Input.Group compact>
-      <Select defaultValue="Option1">
-        <Select value="Стик">Стик</Select>
-        <Select value="Сашет">Сашет</Select>
+    </Col>
+  </Row>
+</Form.Item>
+      <Form.Item label="Тип продукта">
+  <Row gutter={16}>
+    <Col span={8}>
+      <Select
+       onChange={(value) => setProduct({ ...product, type: value })}
+      >
+        {product_types.map(type => (
+          <Select.Option  name="type"   key={type.key} value={type.label}>{type.label}</Select.Option>
+        ))}
       </Select>
-      <Input
-        style={{
-          width: '50%',
-        }}
-        defaultValue="input content"
-      />
-      <InputNumber />
-    </Input.Group>
-    </Form.Item>
-      <Form.Item>
-        <Button onClick={handleSubmit} type="primary" htmlType="submit">
-          Add Product
-        </Button>
-      </Form.Item>
+    </Col>
+    <Col span={8}>
+      <Button type="primary" onClick={handleSubmit}>Add Product</Button>
+    </Col>
+  </Row>
+</Form.Item>
+     
     </Form>
     <Product_types data = {saved_products} />
     </div>
