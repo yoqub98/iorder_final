@@ -96,7 +96,7 @@ const [newprice, setNewPrice] = useState([])
     const handleStatus = (e)=> {
       
       setOrderlist ({...orderlist, status : e.target.value})
-      console.log( e.target.value)
+      
     }
 
 
@@ -109,10 +109,13 @@ const [newprice, setNewPrice] = useState([])
        console.log(value[0]) // sashet 
      
       let getprice = await fetchPrice(value)
-       setNewPrice( getprice)   
-       setOrderlist({...orderlist, price : getprice})
-      setOrderlist({...orderlist, product_type: value[0] })
-       setOrderlist({...orderlist, product: value[1] })
+  
+    
+      setOrderlist({...orderlist, 
+        product: value[0],
+        product_type: value[1], 
+        price: getprice});
+       console.log(orderlist.price)
     }
 
 
@@ -122,13 +125,15 @@ const [newprice, setNewPrice] = useState([])
       const query = productsRef.where("name", "==", value[1]).where("type", "==", value[0]);
       const querySnapshot = await query.get();
       const data = querySnapshot.docs[0].data();
+      
       return data.price;
   }
 
     const handleAmount = (amount) => {
-console.log(amount)
-console.log(newprice)
-     setOrderlist ({...orderlist, total : newprice*amount*1000, quantity: amount});
+//console.log(amount)
+//console.log(newprice)
+     setOrderlist ({...orderlist, total : orderlist.price*amount*1000, quantity: amount});
+     
     
        // console.log(orderlist.total)
     
@@ -138,7 +143,7 @@ console.log(newprice)
 
 const handleSubmit =()=> {
 
-
+  
 console.log(orderlist)
 
  handlePost(orderlist)
