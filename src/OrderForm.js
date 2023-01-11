@@ -111,8 +111,8 @@ const [product_categ, SetProducCateg] = useState("")
      
       let getprice = await fetchPrice(value)
   
-   SetProducName(value[0])
-    SetProducCateg(value[1])
+   SetProducName(value[1])
+    SetProducCateg(value[0])
      
        setOrderlist({...orderlist, price : getprice })
        console.log(orderlist.price)
