@@ -22,15 +22,15 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
 
-async function handlePost (datalist) {
+async function handlePost (datalist, makeprice, product_name,product_categ) {
 
     const data = {
      date : datalist.date,
     client : datalist.client,
-    product: datalist.product,
-    product_type : datalist.product_type,
+    product: product_name,
+    product_type : product_categ,
     quantity : datalist.quantity,
-   price : datalist.price,
+   price : makeprice,
     total : datalist.total,
     status : datalist.status,
     pay_status : datalist.pay_status
@@ -56,7 +56,8 @@ function OrderForm () {
   })
   const [disabled, setDisabled] = useState(true);
   const [options, setOptions] = useState([]);
-const [newprice, setNewPrice] = useState([])
+const [product_name, SetProducName] = useState("")
+const [product_categ, SetProducCateg] = useState("")
   useEffect(() => {
     const fetchData = async () => {
       const productsRef = db.collection('products');
@@ -110,11 +111,10 @@ const [newprice, setNewPrice] = useState([])
      
       let getprice = await fetchPrice(value)
   
-    
-      setOrderlist({...orderlist, 
-        product: value[0],
-        product_type: value[1], 
-        price: getprice});
+   SetProducName(value[0])
+    SetProducCateg(value[1])
+     
+       setOrderlist({...orderlist, price : getprice })
        console.log(orderlist.price)
     }
 
@@ -125,7 +125,7 @@ const [newprice, setNewPrice] = useState([])
       const query = productsRef.where("name", "==", value[1]).where("type", "==", value[0]);
       const querySnapshot = await query.get();
       const data = querySnapshot.docs[0].data();
-      
+     
       return data.price;
   }
 
@@ -144,9 +144,10 @@ const [newprice, setNewPrice] = useState([])
 const handleSubmit =()=> {
 
   
-console.log(orderlist)
+console.log(orderlist.product)
+const makeprice = orderlist.total / orderlist.quantity / 1000
 
- handlePost(orderlist)
+ handlePost(orderlist,makeprice,product_name,product_categ)
 }
 
 
