@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './index.css';
 import { PlusOutlined } from '@ant-design/icons';
-import { Form, Radio,Card, Cascader, Row, Col, Statistic, Option, InputNumber, Select, DatePicker, Button, Layout, Typography} from 'antd';
+import { Form, Radio,Card, Cascader, Row, Col, Statistic, Option, InputNumber, Select, DatePicker, Button, Layout, Typography, message} from 'antd';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
@@ -37,7 +37,13 @@ async function handlePost (datalist, makeprice, product_name,product_categ) {
   
     };
     console.log(data)
-    const res = await db.collection('orders').add(data, {merge:true});
+    const res = await db.collection('orders').add(data, {merge:true}).then(() => {
+      message.success('Заказ успешно добавлен в базу данных!');
+    })
+    .catch((error) => {
+     message.error (error.message);
+    });;
+    
   }
 
 
@@ -192,6 +198,11 @@ const TotalCard = () => {
           <Select.Option value="Baskin Robbins">Baskin Robbins</Select.Option>
           <Select.Option value="Big Burger">Big Burger</Select.Option>
           <Select.Option value="Chopar">Chopar</Select.Option>
+          <Select.Option value="ChayKoff">ChayKoff</Select.Option>
+          <Select.Option value="Merhaba">Merhaba</Select.Option>
+          <Select.Option value="Bellisimo">Bellisimo</Select.Option>
+          <Select.Option value="Daniel Hill">Daniel Hill</Select.Option>
+
         </Select>
     </Form.Item>
  
