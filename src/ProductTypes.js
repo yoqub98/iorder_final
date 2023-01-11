@@ -47,9 +47,9 @@ const Product_types = (props) => {
           <Card  style={{ marginBottom: '18px' }} bordered={false} headStyle={{ borderColor: '#1890ff' , borderWidth: 1.5, backgroundColor: '#fafafa'}} 
           type="inner" title={item.name} 
           actions={[
-            <InfoCircleOutlined key="setting" />,
+            <InfoCircleOutlined style={{ color: '#40a9ff' }}   key="setting" />,
             <EditOutlined key="edit" />,
-            <DeleteOutlined key="ellipsis" onClick={() => showDeleteConfirm(item)} />,
+            <DeleteOutlined style={{ color: '#ff4d4f' }} key="ellipsis" onClick={() => showDeleteConfirm(item)} />,
           ]}>
            Цена : {item.price} сум/шт
            <Meta style={{ marginTop: '12px' }} description={"Тип упаковки : " + " " + item.type}>

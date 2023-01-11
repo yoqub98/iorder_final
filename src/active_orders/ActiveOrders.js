@@ -1,17 +1,10 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Badge, Button, Space, Table, Typography } from "antd";
+import { Badge, Button, Modal, message, Space, Table, Typography } from "antd";
 import { initializeApp } from "firebase/app";
 import { Spin } from 'antd';
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
-import {
-  collection,
-  deleteDoc,
-  doc,
-
-  getDocs,
-  getFirestore,
-} from "firebase/firestore";
+import {collection, deleteDoc, doc, getDocs, getFirestore,} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 const { Text } = Typography;
 
@@ -116,8 +109,8 @@ function ActiveOrders() {
       render: (text, row) => (
         <Space size="middle">
           <Button
-            onClick={handleDelete.bind(this, row.id)}
-            icon={<DeleteOutlined style={{ fontSize: "16px", color: "red" }} />}
+            onClick={showDeleteConfirm.bind(this, row.id)}
+            icon={<DeleteOutlined style={{ fontSize: "16px", color: "#ff4d4f" }} />}
             type="text"
           >
            
@@ -144,15 +137,32 @@ function ActiveOrders() {
     deleteData(id);
   };
 
+  const showDeleteConfirm = (id) => {
+    Modal.confirm({
+      title: 'Удалить',
+      content: 'Удалить данный заказ с базы данных?',
+      okText: 'Да',
+      okType: 'danger',
+      cancelText: 'Нет',
+      onOk() {
+        deleteData(id);
+      },
+    });
+  };
+
+
+
+
+
   const deleteData = async (id) => {
     const db = getFirestore();
     const docRef = doc(db, "orders", id);
     deleteDoc(docRef)
       .then(() => {
-        alert("Order has been deleted!");
-        console.log("Entire Document has been deleted successfully.");
+        message.success('Заказ успешно удален с базы данных!');
+       
         fetchPost();
-        window.location.reload();
+        
       })
       .catch((error) => {
         console.log(error);
@@ -162,16 +172,18 @@ function ActiveOrders() {
   const fetchPost = async () => {
     await getDocs(collection(db, "orders")).then((querySnapshot) => {
       setLoading(false)
+      
       const newData = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
       }));
       setOrders(newData);
-      setLengh(orders.length);
-      console.log(orders.length);
+      
+      setLocalData(newData) // orders => data from firebase ( data here is  == local data )
+      console.log(datalenght);
     });
   };
-
+  const [data, setLocalData] = useState([])
   const [bordered, setBordered] = useState(false);
   const [loading, setLoading] = useState(true);
   const [size, setSize] = useState("large");
@@ -194,7 +206,7 @@ function ActiveOrders() {
       setLoading(false);
     }, 2000);
     fetchPost();
-    setLengh(orders.length);
+    setLengh(data.length);
   }, []);
 
   const scroll = {};
@@ -226,7 +238,8 @@ function ActiveOrders() {
     tableLayout,
   };
 
-  const data = orders; // orders => data from firebase ( data == local data )
+ 
+  
 
   for (let i = 0; i < datalenght; i++) {
     data.push({

@@ -3,18 +3,23 @@ import { BarsOutlined, CodeSandboxOutlined,PlusSquareOutlined, FileAddOutlined }
 import Icon from '@ant-design/icons/lib/components/Icon';
 import { Layout, Menu } from 'antd';
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Link, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Link, Route, Routes, useLocation } from 'react-router-dom';
 import ActiveOrders from './active_orders/ActiveOrders';
 import Inventory from './Inventory';
 import OrderForm from './OrderForm';
 import AddProduct from './AddProduct';
+
 const { Header, Content, Footer, Sider } = Layout;
 
 
 class RouterApp extends Component {
    state = {
       collapsed: false,
-   };
+   
+        };
+
+
+  
 
    onCollapse = collapsed => {
       this.setState({ collapsed });
@@ -25,6 +30,8 @@ class RouterApp extends Component {
       });
    };
 
+
+
    render() {
       return (
          <Router>
@@ -34,6 +41,7 @@ class RouterApp extends Component {
                   collapsed={this.state.collapsed}
                   onCollapse={this.onCollapse}
                >
+             
                   <div className='logo' />
                   <Menu theme='dark' defaultSelectedKeys={['1']} mode='inline'>
                      <Menu.Item key='1'>
