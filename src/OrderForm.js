@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './index.css';
 import { PlusOutlined } from '@ant-design/icons';
 import { Form, Radio,Card, Cascader, Row, Col, Statistic, Option, InputNumber, Select, DatePicker, Button, Layout, Typography} from 'antd';
@@ -55,7 +55,38 @@ function OrderForm () {
     
   })
   const [disabled, setDisabled] = useState(true);
+  const [options, setOptions] = useState([]);
+const [newprice, setNewPrice] = useState([])
+  useEffect(() => {
+    const fetchData = async () => {
+      const productsRef = db.collection('products');
+      const productsSnapshot = await productsRef.get();
+      const products = productsSnapshot.docs.map(doc => doc.data());
+  
+      const nestedOptions = products.reduce((acc, product) => {
+        const parent = product.type;
+        if (!acc[parent]) {
+          acc[parent] = { value: parent, label: parent, children: [] };
+        }
+        acc[parent].children.push({ value: product.name, label: product.name });
+        return acc;
+      }, {});
+      Object.values(nestedOptions).forEach(parent => {
+        parent.children.sort((a, b) => a.value.localeCompare(b.value));
+      });
+      setOptions(Object.values(nestedOptions));
+      
+    };
+    fetchData();
+  }, []);
 
+
+
+
+
+
+
+  
    const handleDate = (date, dateString) => {
      //console.log(dateString)
      setOrderlist ({...orderlist, date : dateString})
@@ -74,41 +105,31 @@ function OrderForm () {
         setOrderlist ({...orderlist, client : value})
     }
 
-    const handleProduct = (value) => {
+   async function  handleProduct (value) {
+       console.log(value[0]) // sashet 
      
-
-console.log(value[0])
-        
-        if (value[1]==="Сашет-бел") {
-         
-         setOrderlist ({...orderlist, price : 140000, product: value[1], product_type: value[0]})
-                
-        }
-           else if (value[1]==="Стик-бел") {
-          
-           setOrderlist ({...orderlist, price : 140000, product: value[1],product_type: value[0] }) 
-        }
-        else if (value[1]==="Сашет-корч") {
-          
-          setOrderlist ({...orderlist, price : 320000, product: value[1],product_type: value[0] }) 
-       }
-       else if (value[1]==="Стик-корч") {
-          
-        setOrderlist ({...orderlist, price : 320000, product: value[1],product_type: value[0] }) 
-     }
-
-
-        else if (value[0]==="Соль") {
-         
-          setOrderlist ({...orderlist, price : 45000, product: value[1], product_type: value[0]}) 
-
-        }
+      let getprice = await fetchPrice(value)
+       setNewPrice( getprice)   
+       setOrderlist({...orderlist, price : getprice})
+      setOrderlist({...orderlist, product_type: value[0] })
+       setOrderlist({...orderlist, product: value[1] })
     }
 
-    const handleAmount = (amount) => {
 
-     setOrderlist ({...orderlist, total : orderlist.price*amount, quantity: amount});
-        
+
+    async function fetchPrice(value) {
+      const productsRef = db.collection("products");
+      const query = productsRef.where("name", "==", value[1]).where("type", "==", value[0]);
+      const querySnapshot = await query.get();
+      const data = querySnapshot.docs[0].data();
+      return data.price;
+  }
+
+    const handleAmount = (amount) => {
+console.log(amount)
+console.log(newprice)
+     setOrderlist ({...orderlist, total : newprice*amount*1000, quantity: amount});
+    
        // console.log(orderlist.total)
     
             }
@@ -123,9 +144,7 @@ console.log(orderlist)
  handlePost(orderlist)
 }
 
-const handleProducttype = ( value) => {
-  setOrderlist ({...orderlist, product: value});
-}
+
 
 const handlePaymentStatusChange = (e) => {
   setOrderlist ({...orderlist, pay_status : e.target.value})
@@ -171,42 +190,7 @@ const TotalCard = () => {
     </Form.Item>
  
   <Form.Item label="Продукт">
-          <Cascader onChange={handleProduct}
-            options={[
-              {
-                value: 'Сахар',
-                label: 'Сахар',
-                children: [
-                    {
-                        value: 'Стик-бел',
-                        label: 'Стик-бел',
-                          },
-                          {
-                            value: 'Стик-корч',
-                            label: 'Стик-корч',
-                              },
-                          {
-                            value: 'Сашет-бел',
-                            label: 'Сашет-бел',
-                              },
-                              {
-                                value: 'Сашет-корч',
-                                label: 'Сашет-корч',
-                                  },
-                ],
-              },
-              {
-                value: 'Соль',
-                label: 'Соль',
-                children: [
-                        {
-                        value: 'Сашет',
-                        label: 'Сашет',
-                          },
-                ],
-              },
-            ]}
-          />
+          <Cascader onChange={handleProduct} options={options}    />
         </Form.Item>
   <Form.Item label="Количество">
         <InputNumber onChange={handleAmount} />
