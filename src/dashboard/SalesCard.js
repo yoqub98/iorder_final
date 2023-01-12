@@ -20,38 +20,41 @@ var db = firebase.firestore();
 
 
 const SalesCard = () => {
-  // Get current month and previous month in the format 'YYYY-MM'
-  const currentMonth = new Date().toISOString().slice(0, 7);
-  const previousMonth = new Date(new Date().setMonth(new Date().getMonth() - 1) ).toISOString().slice(0, 7);
-
-  // Get total sales for current month and previous month
-  const [currentSales, setCurrentSales] = useState(0);
-  const [previousSales, setPreviousSales] = useState(0);
-
-  useEffect(() => {
+   // Get current and previous month in the format 'YYYY-MM'
+   const current = new Date();
+const currentMonth = current.toISOString().slice(0, 7);
+let previousMonth = new Date(current);
+previousMonth.setUTCMonth(current.getUTCMonth()-1);
+previousMonth = previousMonth.toISOString().slice(0, 7);
+ 
+   // Get total sales for current month and previous month
+   const [currentSales, setCurrentSales] = useState(0);
+   const [previousSales, setPreviousSales] = useState(0);
+ 
+   useEffect(() => {
+     db.collection('orders')
+       .where('date', '>=', `${currentMonth}-01T00:00:00`)
+       .where('date', '<=', `${currentMonth}-31T23:59:59`)
+       .get()
+       .then(snapshot => {
+         let total = 0;
+         snapshot.forEach(doc => {
+           total += doc.data().total;
+         });
+         setCurrentSales(total);
+       })
+       .catch(error => {
+         console.error('Error getting current month sales: ', error);
+       });
+   }, [ [currentMonth]]);
+ 
+   useEffect(() => {
+    let total = 0;
     db.collection('orders')
-      .where('date', '>=', `${currentMonth}-01`)
-      .where('date', '<', `${currentMonth}-31`)
+       .where('date', '>=', `${previousMonth}-01T00:00:00`)
+       .where('date', '<=', `${previousMonth}-31T23:59:59`)
       .get()
       .then(snapshot => {
-        let total = 0;
-        snapshot.forEach(doc => {
-          total += doc.data().total;
-        });
-        setCurrentSales(total);
-      })
-      .catch(error => {
-        console.error('Error getting current month sales: ', error);
-      });
-  }, []); // adding [] to avoid unnecessary re-rendering
-  
-  useEffect(() => {
-    db.collection('orders')
-      .where('date', '>=', `${previousMonth}-01`)
-      .where('date', '<', `${previousMonth}-31`)
-      .get()
-      .then(snapshot => {
-        let total = 0;
         snapshot.forEach(doc => {
           total += doc.data().total;
         });
@@ -61,21 +64,21 @@ const SalesCard = () => {
         console.error('Error getting previous month sales: ', error);
       });
   }, []);
-
-  // Calculate the sales growth compared to previous month
-  let salesGrowth;
-  if (previousSales === 0) {
-    salesGrowth = 'NA';
-  } else {
-    salesGrowth = ((currentSales - previousSales) / previousSales) * 100;
-  }
-  
-  return (
-    <Card>
-      <p>Current Month Sales: {currentSales}</p>
-      <p>Previous Month Sales: {previousSales}</p>
-      <p>Sales Growth: {salesGrowth}%</p>
-    </Card>
-  );
+ 
+   // Calculate the sales growth compared to previous month
+   let salesGrowth;
+   if (previousSales === 0) {
+     salesGrowth = 'NA';
+   } else {
+     salesGrowth = ((currentSales - previousSales) / previousSales) * 100;
+   }
+ 
+   return (
+     <Card>
+       <p>Current Month Sales: {currentSales}</p>
+       <p>Previous Month Sales: {previousSales}</p>
+       <p>Sales Growth: {salesGrowth}%</p>
+     </Card>
+   );
 }
 export default SalesCard;

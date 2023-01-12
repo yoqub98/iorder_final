@@ -6,6 +6,7 @@ import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import {collection, deleteDoc, doc, getDocs, getFirestore,} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
+import moment from "moment";
 const { Text } = Typography;
 
 const firebaseConfig = {
@@ -37,11 +38,14 @@ function ActiveOrders() {
     {
       title: "Дата",
       dataIndex: "date",
+      render: (text, record) => {
+        const date = moment(record.date).format("DD/MM/YYYY");
+        return <Text>{date}</Text>;
+      },
       sorter: (a, b) => {
         // Convert the date strings to Date objects
-        const dateA = new Date(a.date);
-        const dateB = new Date(b.date);
-      
+        const dateA = new Date(moment(a.date).format("DD/MM/YYYY"));
+        const dateB = new Date(moment(b.date).format("DD/MM/YYYY"));
         // Compare the dates and return a value that determines their order
         if (dateA < dateB) return -1;
         if (dateA > dateB) return 1;
@@ -49,7 +53,7 @@ function ActiveOrders() {
       },
       defaultSortOrder: "descend",
     },
-    {
+        {
       title: "Заказчик",
       dataIndex: "client",
       sorter: (a, b) => a.title - b.title,
@@ -173,12 +177,26 @@ function ActiveOrders() {
     await getDocs(collection(db, "orders")).then((querySnapshot) => {
       setLoading(false)
       
-      const newData = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-      setOrders(newData);
+      const newData = querySnapshot.docs.map((doc) => {
+        const timestamp = doc.data().date;
+        const date = timestamp.toDate();
+        const formattedDate = date.toLocaleDateString('en-US', {
+            day: 'numeric',
+            month: 'numeric',
+            year: 'numeric'
+        }).replace(/\//g, '/');
+        
+        return {
+            ...doc.data(),
+            date: formattedDate,
+            id: doc.id
+        }
+    });
+ 
+
       
+      setOrders(newData);
+      console.log(newData)
       setLocalData(newData) // orders => data from firebase ( data here is  == local data )
       console.log(datalenght);
     });

@@ -23,9 +23,9 @@ firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
 
 async function handlePost (datalist, makeprice, product_name,product_categ) {
-
+  const timestamp = firebase.firestore.Timestamp.fromDate(new Date( datalist.date));
     const data = {
-     date : datalist.date,
+     date : timestamp,
     client : datalist.client,
     product: product_name,
     product_type : product_categ,
