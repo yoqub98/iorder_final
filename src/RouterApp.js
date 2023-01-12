@@ -1,4 +1,4 @@
-import { BarsOutlined, CodeSandboxOutlined,PlusSquareOutlined, FileAddOutlined } from '@ant-design/icons';
+import { BarsOutlined, CodeSandboxOutlined,PlusSquareOutlined, FileAddOutlined, DashboardOutlined } from '@ant-design/icons';
 
 import Icon from '@ant-design/icons/lib/components/Icon';
 import { Layout, Menu } from 'antd';
@@ -8,6 +8,7 @@ import ActiveOrders from './active_orders/ActiveOrders';
 import Inventory from './Inventory';
 import OrderForm from './OrderForm';
 import AddProduct from './AddProduct';
+import Dashboard from './dashboard/Dashboard';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -18,7 +19,7 @@ class RouterApp extends Component {
    
         };
 
-
+      
   
 
    onCollapse = collapsed => {
@@ -65,6 +66,12 @@ class RouterApp extends Component {
                         <span>Добавить продукт</span>
                         <Link to='/addproduct' />
                      </Menu.Item>
+                     <Menu.Item key='5'>
+                        <DashboardOutlined style={{ fontSize: '18px' }} />
+                        <span>Dashboard</span>
+
+                        <Link to='/dashboard' />
+                     </Menu.Item>
                   </Menu>
                </Sider>
                <Layout>
@@ -89,6 +96,7 @@ class RouterApp extends Component {
                         <Route path='/active_orders' element={<ActiveOrders />} />
                         <Route path='/inventory' element={<Inventory />} />
                         <Route path='/addproduct' element={<AddProduct />} />
+                        <Route path='/dashboard' element={<Dashboard />} />
                      </Routes>
                   </Content>
                   <Footer style={{ textAlign: 'center' }}>OrderIt</Footer>

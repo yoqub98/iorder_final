@@ -1,4 +1,10 @@
-import firebase from 'firebase'
+import React from "react";
+import { useState } from "react";
+import { Card } from 'antd';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+import SalesCard from "./SalesCard";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCEsm2uX4Ott4vxlH-K_p25xnYPShXv6FI",
@@ -10,7 +16,17 @@ const firebaseConfig = {
     appId: "1:257343919180:web:ffaa88ed28958ff04c90e9",
     measurementId: "G-89DK3S524X"
   };
-  const firebaseApp=firebase.initializeApp(firebaseConfig);
-  const db=firebase.firestore();
   
-  export default db;;
+  firebase.initializeApp(firebaseConfig);
+  var db = firebase.firestore();
+  
+
+const Dashboard =()=> {
+
+   return ( 
+   <SalesCard/> 
+   )
+
+
+}
+export default Dashboard; 

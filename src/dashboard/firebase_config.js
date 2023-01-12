@@ -1,5 +1,3 @@
-import firebase from 'firebase'
-
 const firebaseConfig = {
     apiKey: "AIzaSyCEsm2uX4Ott4vxlH-K_p25xnYPShXv6FI",
     authDomain: "biflow-efa49.firebaseapp.com",
@@ -10,7 +8,8 @@ const firebaseConfig = {
     appId: "1:257343919180:web:ffaa88ed28958ff04c90e9",
     measurementId: "G-89DK3S524X"
   };
-  const firebaseApp=firebase.initializeApp(firebaseConfig);
-  const db=firebase.firestore();
   
-  export default db;;
+  firebase.initializeApp(firebaseConfig);
+  var db = firebase.firestore();
+
+return db;
