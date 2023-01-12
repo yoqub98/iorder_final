@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Card , Statistic} from 'antd';
+import { Card , Statistic, Typography, Row, Col} from 'antd';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
-
+const { Text } = Typography;
+const { Meta } = Card;
 const firebaseConfig = {
   apiKey: "AIzaSyCEsm2uX4Ott4vxlH-K_p25xnYPShXv6FI",
   authDomain: "biflow-efa49.firebaseapp.com",
@@ -70,18 +71,18 @@ const SalesCard = () => {
       salesGrowth = 0;
   }
   return (
-      <Card title="Обьем продаж" bordered={false}  >
+      <Card style={{width:'20%'}} title="Обьем продаж" bordered={false}  headStyle={{ borderColor: '#1890ff' , borderWidth: 1.5, backgroundColor: '#fafafa'}}  >
        <Statistic style={{fontWeight : "600"}} title="Этот месяц:" value={currentMonthSales.toLocaleString("en-US")+" сум"}  />
-       <Statistic style={{fontWeight : "300", fontSize: 8}}
-          
-            value={salesGrowth + "%"}
-            precision={2}
-            valueStyle={{ color: '#3f8600' }}
-            prefix={<ArrowUpOutlined size={2} />}
-            suffix="%"
-          />
-          <p>Прошлый месяц: {previousMonthSales.toLocaleString("en-US")+" сум"}</p>
-          
+      <Row style={{color:'#389e0d'}} gutter={8} span={12}>
+        <Col>
+          <Text style={{color:'#389e0d'}}  >{salesGrowth + " %"}</Text>
+          </Col>
+          <Col>
+          <ArrowUpOutlined  />
+          </Col>
+          </Row>
+          <br></br>
+          <Meta  description={"Прошлый месяц: "+ previousMonthSales.toLocaleString("en-US")+" сум"} />
       </Card>
   );
 };
