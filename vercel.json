@@ -3,7 +3,8 @@
       {"source": "/active_orders", "destination": "./src/active_orders/ActiveOrders.js"},
       {"source": "/inventory", "destination": "./src/Inventory.js"},
       {"source": "/dashboard", "destination": "./src/dashboard/Dashboard.js"},
-      {"source": "/add_product", "destination": "./src/dashboard/AddProduct.js"},
+      {"source": "/add_product", "destination": "./src/AddProduct.js"},
+   
       
       {}
     ]
