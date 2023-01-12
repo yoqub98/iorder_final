@@ -71,7 +71,7 @@ const SalesCard = () => {
       salesGrowth = 0;
   }
   return (
-      <Card style={{width:'20%'}} title="Обьем продаж" bordered={false}  headStyle={{ borderColor: '#1890ff' , borderWidth: 1.5, backgroundColor: '#fafafa'}}  >
+      <Card style={{width:'25%'}} title="Обьем продаж" bordered={false}  headStyle={{ borderColor: '#1890ff' , borderWidth: 1.5, backgroundColor: '#fafafa'}}  >
        <Statistic style={{fontWeight : "600"}} title="Этот месяц:" value={currentMonthSales.toLocaleString("en-US")+" сум"}  />
       <Row style={{color:'#389e0d'}} gutter={8} span={12}>
         <Col>
