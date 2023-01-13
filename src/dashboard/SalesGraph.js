@@ -22,87 +22,75 @@ const firebaseConfig = {
 
 
 
-  const SalesGraph = () => {
-    const [data, setData] = useState(null);
-  
-    useEffect(() => {
-     
-      const ordersRef = db.collection('orders');
-      const currentDate = moment();
-      const sixMonthsAgo = moment().subtract(6, 'months');
-  
-      const salesByMonth = {};
-  
-      ordersRef
-        .where('date', '>=', sixMonthsAgo.toDate())
-        .where('date', '<=', currentDate.toDate())
-        .onSnapshot(snapshot => {
-          snapshot.forEach(doc => {
-            const order = doc.data();
-            const date = moment(order.date);
-            const month = date.format('MMMM YYYY');
-  
-            if (!salesByMonth[month]) {
-              salesByMonth[month] = 0;
-            }
-  
-            salesByMonth[month] += order.total;
-          });
-  
-          const labels = Object.keys(salesByMonth);
-          const values = Object.values(salesByMonth);
-  
-          setData({
-            labels,
-            datasets: [
-              {
-                label: 'Sales',
-                data: values,
-                backgroundColor: 'rgba(75,192,192,0.4)',
-                borderColor: 'rgba(75,192,192,1)',
-              },
-            ],
-          });
-        });
-    }, []);
-  
-    const options = {
-      scales: {
-        xAxes: [{
-          type: 'time',
-          time: {
-            unit: 'month',
-            displayFormats: {
-              month: 'MMM YYYY'
-            }
-          },
-          scaleLabel: {
-            display: true,
-            labelString: 'Month'
-          }
-        }],
-        yAxes: [{
-          scaleLabel: {
-            display: true,
-            labelString: 'Sales'
-          }
-        }]
-      }
-    };
-  
-    if (!data) {
-      return (
-        <Card>
-          <Spin />
-        </Card>
-      );
+
+
+class SalesGraph extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            orders: [],
+            period: [],
+            sales: []
+        };
     }
-  
-    return (
-      <Card>
-        <Line data={data} options={options}/>
-      </Card>
-    );
-  };
+
+    componentDidMount() {
+       
+        db.collection('orders').get().then((querySnapshot) => {
+            const orders = [];
+            querySnapshot.forEach((doc) => {
+                orders.push(doc.data());
+            });
+
+            // Process the orders data to create the period and sales lists
+            const period = [];
+            const sales = [];
+
+            const currentDate = new Date();
+            for (let i = 0; i < 6; i++) {
+                const month = currentDate.getMonth() - i;
+                const year = currentDate.getFullYear();
+                if (month < 0) {
+                    period.push(`${12 + month}/${year - 1}`);
+                } else {
+                    period.push(`${month}/${year}`);
+                }
+            }
+
+            period.forEach(month => {
+                const filteredOrders = orders.filter(order => {
+                    const orderDate = new Date(order.date);
+                    return orderDate.getMonth() === Number(month.split('/')[0]) && orderDate.getFullYear() === Number(month.split('/')[1]);
+                });
+
+                sales.push({
+                    month: month,
+                    total: filteredOrders.reduce((acc, order) => acc + order.total, 0)
+                });
+            });
+
+            this.setState({
+                orders: orders,
+                period: period,
+                sales: sales
+            });
+        });
+    }
+
+    render() {
+        return (
+            <div>
+    Sales:
+    {this.state.sales.map((sale, index) => (
+        <div key={index}>
+            Month: {sale.month}, Total: {sale.total}
+        </div>
+    ))}
+</div>
+        );
+    }
+}
+
+
 
   export default SalesGraph 
