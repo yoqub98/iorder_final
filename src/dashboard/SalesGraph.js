@@ -4,6 +4,33 @@ import { Card } from 'antd';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
+import { Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+
+
+
+
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyCEsm2uX4Ott4vxlH-K_p25xnYPShXv6FI",
@@ -18,11 +45,17 @@ const firebaseConfig = {
   firebase.initializeApp(firebaseConfig);
   var db = firebase.firestore();
 
-  const SalesData = () => {
-   
-  const [period, setPeriod] = useState([]);
-const [sales, setSales] = useState([])
 
+
+
+
+
+
+  const SalesData = () => {
+    const [period, setPeriod] = useState([]);
+    const [sales, setSales] = useState([]) 
+   const [labels, setLabels] = useState([])
+const [salesData, setSalesData] = useState([])
   
   useEffect(() => {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -44,8 +77,12 @@ const [sales, setSales] = useState([])
           querySnapshot.forEach((doc) => {
             salesList[i] += doc.data().total;
           });
+          
           setPeriod(periodList);
+          setLabels(periodList);
     setSales(salesList);
+    setSalesData(salesList);
+    
         });
       monthIndex -= 1;
       if (monthIndex < 0) {
@@ -53,13 +90,53 @@ const [sales, setSales] = useState([])
         year -= 1;
       }
     }
-    
+    labels.reverse()
+    salesData.reverse()
   }, []);
+
+  const options = {
+    responsive: true,
+    plugins: {
+    legend: {
+    position: 'top',
+    },
+    title: {
+    display: true,
+    text: 'Chart.js Line Chart',
+    },
+    },
+    scales: {
+      yAxes: [{
+                ticks: {
+                   reverse: true,
+                   beginAtZero: true,
+             }
+      }]
+  }
+    };
+  
+    const data = {
+      labels,
+      datasets: [
+        {
+          label: 'Dataset 1',
+          data: salesData,
+          borderColor: 'rgb(255, 99, 132)',
+          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        },
+       
+      ],
+    };
+
+
+
+
 
     return (
       <Card title="Order Summary">
         <p>Period: {period.join(', ')}</p>
        <p>Sales: {sales.join(',')}</p>
+       <Line options={options} data={data} />
       </Card>
     );
   };
