@@ -5,7 +5,7 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import SalesCard from "./SalesCard";
-import SalesGraph from "./SalesGraph";
+import SalesData from "./SalesGraph";
 const firebaseConfig = {
     apiKey: "AIzaSyCEsm2uX4Ott4vxlH-K_p25xnYPShXv6FI",
     authDomain: "biflow-efa49.firebaseapp.com",
@@ -26,7 +26,7 @@ const Dashboard =()=> {
    return ( 
     <div>
    <SalesCard/> 
-   <SalesGraph/>
+   <SalesData/>
    </div>
    )
 

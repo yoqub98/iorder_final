@@ -24,73 +24,59 @@ const firebaseConfig = {
 
 
 
-class SalesGraph extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            orders: [],
-            period: [],
-            sales: []
-        };
-    }
+  const SalesGraph = () => {
+   
+    const [period, setPeriod] = useState([]);
 
-    componentDidMount() {
-       
-        db.collection('orders').get().then((querySnapshot) => {
-            const orders = [];
-            querySnapshot.forEach((doc) => {
-                orders.push(doc.data());
-            });
-
-            // Process the orders data to create the period and sales lists
-            const period = [];
-            const sales = [];
-
-            const currentDate = new Date();
-            for (let i = 0; i < 6; i++) {
-                const month = currentDate.getMonth() - i;
-                const year = currentDate.getFullYear();
-                if (month < 0) {
-                    period.push(`${12 + month}/${year - 1}`);
-                } else {
-                    period.push(`${month}/${year}`);
-                }
-            }
-
-            period.forEach(month => {
-                const filteredOrders = orders.filter(order => {
-                    const orderDate = new Date(order.date);
-                    return orderDate.getMonth() === Number(month.split('/')[0]) && orderDate.getFullYear() === Number(month.split('/')[1]);
-                });
-
-                sales.push({
-                    month: month,
-                    total: filteredOrders.reduce((acc, order) => acc + order.total, 0)
-                });
-            });
-
-            this.setState({
-                orders: orders,
-                period: period,
-                sales: sales
-            });
+  
+    useEffect(() => {
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      let periodList = Array(6).fill('');
+      let salesList = Array(6).fill(0);
+      const currentDate = new Date();
+      let monthIndex = currentDate.getMonth();
+      let year = currentDate.getFullYear();
+      for (let i = 0; i < 6; i++) {
+        periodList[i] = `${months[monthIndex]} ${year}`;
+        monthIndex -= 1;
+        if (monthIndex < 0) {
+          monthIndex = 11;
+          year -= 1;
+        }
+      }
+      db
+        .collection('orders')
+        .orderBy('date', 'desc')
+        .get()
+        .then((snapshot) => {
+          snapshot.forEach((doc) => {
+            const order = doc.data();
+            const orderDate = new Date(order.date.seconds * 1000);
+            const orderMonth = orderDate.getMonth();
+            const orderYear = orderDate.getFullYear();
+           
+              const periodIndex = 6 - (monthIndex - orderMonth) - 1;
+             
+            
+          });
+          setPeriod(periodList);
+         
+          console.log(salesList)
+          
         });
-    }
+    }, [db]);
+  
+    return (
+      <Card title="Order Summary">
+        <p>Period: {period.join(', ')}</p>
+       
+      </Card>
+    );
+  };
+  
+   
 
-    render() {
-        return (
-            <div>
-    Sales:
-    {this.state.sales.map((sale, index) => (
-        <div key={index}>
-            Month: {sale.month}, Total: {sale.total}
-        </div>
-    ))}
-</div>
-        );
-    }
-}
-
+  
 
 
   export default SalesGraph 
