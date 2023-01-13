@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Line } from 'react-chartjs-2';
-import { Spin, Card } from 'antd';
-import moment from 'moment';
+
+import { Card } from 'antd';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
@@ -19,57 +18,48 @@ const firebaseConfig = {
   firebase.initializeApp(firebaseConfig);
   var db = firebase.firestore();
 
-
-
-
-
-
-  const SalesGraph = () => {
+  const SalesData = () => {
    
-    const [period, setPeriod] = useState([]);
+  const [period, setPeriod] = useState([]);
+const [sales, setSales] = useState([])
 
   
-    useEffect(() => {
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      let periodList = Array(6).fill('');
-      let salesList = Array(6).fill(0);
-      const currentDate = new Date();
-      let monthIndex = currentDate.getMonth();
-      let year = currentDate.getFullYear();
-      for (let i = 0; i < 6; i++) {
-        periodList[i] = `${months[monthIndex]} ${year}`;
-        monthIndex -= 1;
-        if (monthIndex < 0) {
-          monthIndex = 11;
-          year -= 1;
-        }
-      }
-      db
-        .collection('orders')
-        .orderBy('date', 'desc')
+  useEffect(() => {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    let periodList = Array(6).fill('');
+    let salesList = Array(6).fill(0);
+    const currentDate = new Date();
+    let monthIndex = currentDate.getMonth();
+    let year = currentDate.getFullYear();
+  
+    for (let i = 0; i < 6; i++) {
+      periodList[i] = `${months[monthIndex]} ${year}`;
+      const startOfMonth = new Date(year, monthIndex, 1);
+      const endOfMonth = new Date(year, monthIndex + 1, 0);
+      db.collection("orders")
+        .where("date", ">=", startOfMonth)
+        .where("date", "<", endOfMonth)
         .get()
-        .then((snapshot) => {
-          snapshot.forEach((doc) => {
-            const order = doc.data();
-            const orderDate = new Date(order.date.seconds * 1000);
-            const orderMonth = orderDate.getMonth();
-            const orderYear = orderDate.getFullYear();
-           
-              const periodIndex = 6 - (monthIndex - orderMonth) - 1;
-             
-            
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            salesList[i] += doc.data().total;
           });
           setPeriod(periodList);
-         
-          console.log(salesList)
-          
+    setSales(salesList);
         });
-    }, [db]);
-  
+      monthIndex -= 1;
+      if (monthIndex < 0) {
+        monthIndex = 11;
+        year -= 1;
+      }
+    }
+    
+  }, []);
+
     return (
       <Card title="Order Summary">
         <p>Period: {period.join(', ')}</p>
-       
+       <p>Sales: {sales.join(',')}</p>
       </Card>
     );
   };
@@ -79,4 +69,4 @@ const firebaseConfig = {
   
 
 
-  export default SalesGraph 
+  export default SalesData 
