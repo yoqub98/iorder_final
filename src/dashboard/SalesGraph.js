@@ -134,8 +134,7 @@ const [salesData, setSalesData] = useState([])
 
     return (
       <Card title="Order Summary">
-        <p>Period: {period.join(', ')}</p>
-       <p>Sales: {sales.join(',')}</p>
+      
        <Line options={options} data={data} />
       </Card>
     );
