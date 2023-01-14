@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { Card } from 'antd';
+import { Card, Space } from 'antd';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
@@ -24,10 +24,13 @@ const firebaseConfig = {
 const Dashboard =()=> {
 
    return ( 
-    <div>
+    
+<Space  direction="vertical"
+    size="large">
    <SalesCard/> 
-   <SalesData/>
-   </div>
+     <SalesData/>
+   </Space>
+   
    )
 
 

@@ -150,7 +150,7 @@ const [salesData, setSalesData] = useState([])
 
 
     return (
-      <Card title="Order Summary">
+      <Card bordered={false}  style={{width:'500'}}  headStyle={{ borderColor: '#1890ff' , borderWidth: 1.5, backgroundColor: '#fafafa'}}  title="Продажи за последние 6 месяцев">
      
        <Line options={options} data={data} />
       
