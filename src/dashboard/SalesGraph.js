@@ -77,11 +77,12 @@ const [salesData, setSalesData] = useState([])
           querySnapshot.forEach((doc) => {
             salesList[i] += doc.data().total;
           });
-          
-          setPeriod(periodList);
-          setLabels(periodList);
-    setSales(salesList);
-    setSalesData(salesList);
+          const reversedPeriod = periodList.slice().reverse();
+          const reversedSales = salesList.slice().reverse();
+          setPeriod(reversedPeriod);
+          setLabels(reversedPeriod);
+          setSales(reversedSales);
+          setSalesData(reversedSales);
     
         });
       monthIndex -= 1;
@@ -90,30 +91,46 @@ const [salesData, setSalesData] = useState([])
         year -= 1;
       }
     }
-    labels.reverse()
-    salesData.reverse()
+    
   }, []);
 
   const options = {
+    maintainAspectRatio: false,
     responsive: true,
-    plugins: {
+   
     legend: {
-    position: 'top',
+      position: 'top',
     },
     title: {
-    display: true,
-    text: 'Chart.js Line Chart',
-    },
+      display: true,
+      text: 'Chart.js Line Chart',
     },
     scales: {
       yAxes: [{
-                ticks: {
-                   reverse: true,
-                   beginAtZero: true,
-             }
-      }]
-  }
-    };
+        ticks: {
+         
+          beginAtZero: true,
+        },
+      }],
+      xAxes: [{
+        ticks: {
+         
+          beginAtZero: true,
+        },
+      }],
+    },
+   
+    legend: {
+      display: true
+    },
+   
+    elements: {
+      line: {
+        tension:0.3, // Bezier curve tension of the line. Set to 0 for no bezier curves.
+      },
+    },
+  };
+  
   
     const data = {
       labels,
@@ -134,8 +151,9 @@ const [salesData, setSalesData] = useState([])
 
     return (
       <Card title="Order Summary">
-      
+     
        <Line options={options} data={data} />
+      
       </Card>
     );
   };
