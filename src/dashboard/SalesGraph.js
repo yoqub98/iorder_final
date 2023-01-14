@@ -95,7 +95,7 @@ const [salesData, setSalesData] = useState([])
   }, []);
 
   const options = {
-    maintainAspectRatio: false,
+    maintainAspectRatio: true,
     responsive: true,
    
     legend: {
