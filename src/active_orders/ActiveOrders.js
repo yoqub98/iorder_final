@@ -111,7 +111,7 @@ function ActiveOrders() {
       key: "action",
       sorter: true,
       render: (text, row) => (
-        <Space size="middle">
+        <Space size="small">
           <Button
             onClick={showDeleteConfirm.bind(this, row.id)}
             icon={<DeleteOutlined style={{ fontSize: "16px", color: "#ff4d4f" }} />}
