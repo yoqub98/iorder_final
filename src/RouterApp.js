@@ -1,4 +1,4 @@
-import { BarsOutlined, CodeSandboxOutlined,PlusSquareOutlined, FileAddOutlined, DashboardOutlined } from '@ant-design/icons';
+import { BarsOutlined, CodeSandboxOutlined,PlusSquareOutlined, FileAddOutlined, DashboardOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 
 import Icon from '@ant-design/icons/lib/components/Icon';
 import { Layout, Menu } from 'antd';
@@ -9,7 +9,8 @@ import Inventory from './Inventory';
 import OrderForm from './OrderForm';
 import AddProduct from './AddProduct';
 import Dashboard from './dashboard/Dashboard';
-
+import AddCustomer
+ from './AddCustomer';
 const { Header, Content, Footer, Sider } = Layout;
 
 
@@ -66,6 +67,12 @@ class RouterApp extends Component {
                         <span>Добавить продукт</span>
                         <Link to='/addproduct' />
                      </Menu.Item>
+                     <Menu.Item key='6'>
+                        <UsergroupAddOutlined style={{ fontSize: '18px' }} />
+                        <span>Добавить клиента</span>
+
+                        <Link to='/add_customer' />
+                     </Menu.Item>
                      <Menu.Item key='5'>
                         <DashboardOutlined style={{ fontSize: '18px' }} />
                         <span>Dashboard</span>
@@ -97,6 +104,7 @@ class RouterApp extends Component {
                         <Route path='/inventory' element={<Inventory />} />
                         <Route path='/addproduct' element={<AddProduct />} />
                         <Route path='/dashboard' element={<Dashboard />} />
+                        <Route path='/add_customer' element={<AddCustomer />} />
                      </Routes>
                   </Content>
                   <Footer style={{ textAlign: 'center' }}>OrderIt</Footer>
