@@ -1,8 +1,14 @@
 import React, { useState, useEffect} from 'react';
-import { Form, Input, Button, Table, message  } from 'antd';
+import './Customerpage_stlying.css'
+import { Form, Input, Button, Table, message, Modal, Divider } from 'antd';
+import Icon from '@ant-design/icons';
 import firebase from 'firebase/compat/app';
+import { UserOutlined, MessageOutlined, PhoneOutlined} from '@ant-design/icons';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
+import { Typography } from 'antd';
+
+const { Text, Link } = Typography;
 
 const firebaseConfig = {
     apiKey: "AIzaSyCEsm2uX4Ott4vxlH-K_p25xnYPShXv6FI",
@@ -30,6 +36,7 @@ const AddCustomer = () => {
     }
   });
   const [customers, setCustomers] = useState([]);
+  const [visible, setVisible] = useState(false); // for modal pop up
 
   const handleInputChange = (e) => {
     setFormData({
@@ -49,7 +56,15 @@ const AddCustomer = () => {
   }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    console.log(formData)
+   
+   
+    db.collection("customers").add(formData, {merge:true}).then(() => {
+      message.success('Клиент успешно добавлен в базу данных!');
+    })
+    .catch((error) => {
+     message.error (error.message);
+    });;;
     setFormData({
       companyName: '',
       address: '',
@@ -60,13 +75,6 @@ const AddCustomer = () => {
         phoneNumber: ''
       }
     });
-    db.collection("customers").add(formData, {merge:true}).then(() => {
-      message.success('Клиент успешно добавлен в базу данных!');
-    })
-    .catch((error) => {
-     message.error (error.message);
-    });;;
-   
   }
 
   useEffect(() => {
@@ -79,19 +87,31 @@ const AddCustomer = () => {
     });
 }, []);
 
-const columns = [    {      title: 'Company Name',      dataIndex: 'companyName',      key: 'companyName',    },    
+const columns = [    {  title: 'Company Name',
+   dataIndex: 'companyName',  key: 'companyName', render: (text, record) => <Text strong style={{ color: '#1890ff' }}>{text}</Text>,   },    
 {   title: 'Address',     dataIndex: 'address',      key: 'address',    },    
 {   title: 'Email',      dataIndex: 'email',      key: 'email',    },    
 {   title: 'Contact Person',      dataIndex: 'contactPerson',      key: 'contactPerson',
  render: (contactPerson) => (
-  <>  <p>Name: {contactPerson.name}</p>  <p>Telegram: {contactPerson.telegramUrl}</p>  
-        <p>Phone: {contactPerson.phoneNumber}</p>  
+  <>  <p style={{margin: "0px 5px"}}><UserOutlined style={{ marginRight: "2px" }} /> {" " + contactPerson.name}</p>  <Divider style={{margin: "8px "}} type="horizontal" />  
+  <Link href={contactPerson.telegramUrl}><MessageOutlined /> {contactPerson.telegramUrl}   <Divider style={{margin: "8px "}} type="horizontal" /> 
+  </Link>   
+        <p ><PhoneOutlined /> {contactPerson.phoneNumber}</p>  
         </> 
          )  }, ];
 
   return (
     <div>
-      <Form onSubmit={handleSubmit}>
+      <Button type="primary" onClick={() => setVisible(false)}>
+  Добавить
+</Button>
+      <Modal
+  title="Add New Customer"
+  open={visible}
+  onOk={handleSubmit}
+  onCancel={() => setVisible(true)}
+>
+      <Form onFinish={handleSubmit}>
         <Form.Item label="Company Name">
           <Input name="companyName" value={formData.companyName} onChange={handleInputChange} />
         </Form.Item>
@@ -111,11 +131,12 @@ const columns = [    {      title: 'Company Name',      dataIndex: 'companyName'
             <Input name="phoneNumber" value={formData.contactPerson.phoneNumber} onChange={handleContactInputChange} />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit">Add Customer</Button>
+          
           </Form.Item>
         </Form>
-        <Table dataSource={customers} columns={columns} />
-
+       
+        </Modal>
+        <Table  className="bordered-table" dataSource={customers}     columns={columns} />
       </div>
     );
   }
