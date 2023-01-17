@@ -70,6 +70,19 @@ const SalesCard = () => {
   if(isNaN(salesGrowth)){
       salesGrowth = 0;
   }
+
+let arrow;
+let color;
+if (salesGrowth < 0) {
+  arrow = <ArrowDownOutlined style={{ color: 'red' }} />;
+  color = 'red';
+} else {
+  arrow = <ArrowUpOutlined style={{ color: 'green' }} />;
+  color = 'green';
+}
+
+
+
   return (
       <Card style={{width:'100%'}} title="Обьем продаж" bordered={false}  headStyle={{ borderColor: '#1890ff' , borderWidth: 1.5, backgroundColor: '#fafafa'}}  >
         <Meta  description={"За этот месяц"} />
@@ -77,10 +90,10 @@ const SalesCard = () => {
      
       <Row style={{color:'#389e0d'}} gutter={8} span={12}>
         <Col>
-          <Text style={{color:'#389e0d'}}  >{salesGrowth + " %"}</Text>
+          <Text style={{ fontWeight: "600", color: color }} >{salesGrowth + " %"}</Text>
           </Col>
           <Col>
-          <ArrowUpOutlined  />
+         {arrow}
           </Col>
           </Row>
           <br></br>

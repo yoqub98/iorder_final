@@ -136,7 +136,7 @@ const [salesData, setSalesData] = useState([])
       labels,
       datasets: [
         {
-          label: 'Dataset 1',
+          label: 'Обьем продаж',
           data: salesData,
           borderColor: 'rgb(255, 99, 132)',
           backgroundColor: 'rgba(255, 99, 132, 0.5)',

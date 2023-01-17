@@ -61,6 +61,7 @@ const AddCustomer = () => {
    
     db.collection("customers").add(formData, {merge:true}).then(() => {
       message.success('Клиент успешно добавлен в базу данных!');
+      setVisible(false)
     })
     .catch((error) => {
      message.error (error.message);
