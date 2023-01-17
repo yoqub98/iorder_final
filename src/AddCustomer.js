@@ -1,7 +1,7 @@
 import React, { useState, useEffect} from 'react';
 import './Customerpage_stlying.css'
 import { Form, Input, Button, Table, message, Modal, Divider } from 'antd';
-import Icon from '@ant-design/icons';
+import Icon, { PlusCircleOutlined } from '@ant-design/icons';
 import firebase from 'firebase/compat/app';
 import { UserOutlined, MessageOutlined, PhoneOutlined} from '@ant-design/icons';
 import 'firebase/compat/auth';
@@ -102,14 +102,14 @@ const columns = [    {  title: 'Company Name',
 
   return (
     <div>
-      <Button type="primary" onClick={() => setVisible(false)}>
+      <Button icon={<PlusCircleOutlined/>} style={{margin : 15}} type="primary" onClick={() => setVisible(true)}>
   Добавить
 </Button>
       <Modal
   title="Add New Customer"
   open={visible}
   onOk={handleSubmit}
-  onCancel={() => setVisible(true)}
+  onCancel={() => setVisible(false)}
 >
       <Form onFinish={handleSubmit}>
         <Form.Item label="Company Name">
