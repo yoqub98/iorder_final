@@ -60,17 +60,17 @@ function OrderForm () {
     pay_status : ""
     
   })
-  const [disabled, setDisabled] = useState(true);
-  const [options, setOptions] = useState([]);
+const [disabled, setDisabled] = useState(true);
+const [options, setOptions] = useState([]);
 const [product_name, SetProducName] = useState("")
 const [product_categ, SetProducCateg] = useState("")
+const [clientOptions, setClientOptions] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       const productsRef = db.collection('products');
       const productsSnapshot = await productsRef.get();
       const products = productsSnapshot.docs.map(doc => doc.data());
-  
-      const nestedOptions = products.reduce((acc, product) => {
+        const nestedOptions = products.reduce((acc, product) => {
         const parent = product.type;
         if (!acc[parent]) {
           acc[parent] = { value: parent, label: parent, children: [] };
@@ -82,7 +82,13 @@ const [product_categ, SetProducCateg] = useState("")
         parent.children.sort((a, b) => a.value.localeCompare(b.value));
       });
       setOptions(Object.values(nestedOptions));
-      
+      const customersRef = db.collection('customers');
+        const customersSnapshot = await customersRef.get();
+        const customers = customersSnapshot.docs.map(doc => doc.data());
+        const companyNames = customers.map(customer => {
+            return { value: customer.companyName, label: customer.companyName };
+        });
+        setClientOptions(companyNames);
     };
     fetchData();
   }, []);
@@ -188,20 +194,12 @@ const TotalCard = () => {
           <DatePicker onChange={handleDate} />
           </Form.Item>
   <Form.Item label="Заказчик">
-    <Select 
+    <Select options={clientOptions}
           placeholder="Выбрать заказчика"
          onChange={handleClient}
           allowClear
         >
-          <Select.Option value="Les Ailes">Les Ailes</Select.Option>
-          <Select.Option value="Lotte Hotel">Lotte Hotel</Select.Option>
-          <Select.Option value="Baskin Robbins">Baskin Robbins</Select.Option>
-          <Select.Option value="Big Burger">Big Burger</Select.Option>
-          <Select.Option value="Chopar">Chopar</Select.Option>
-          <Select.Option value="ChayKoff">ChayKoff</Select.Option>
-          <Select.Option value="Merhaba">Merhaba</Select.Option>
-          <Select.Option value="Bellisimo">Bellisimo</Select.Option>
-          <Select.Option value="Daniel Hill">Daniel Hill</Select.Option>
+         
 
         </Select>
     </Form.Item>

@@ -4,6 +4,6 @@
       {"source": "/inventory", "destination": "./src/Inventory.js"},
       {"source": "/dashboard", "destination": "./src/dashboard/Dashboard.js"},
       {"source": "/addproduct", "destination": "./src/AddProduct.js"}
-   
+      {"source": "/add_customer", "destination": "./src/AddCustomer.js"}
     ]
   }
