@@ -7,6 +7,13 @@ import { UserOutlined, MessageOutlined, PhoneOutlined} from '@ant-design/icons';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import { Typography } from 'antd';
+import { createFromIconfontCN } from '@ant-design/icons';
+
+const IconSet = createFromIconfontCN({
+  scriptUrl: '//at.alicdn.com/t/c/font_3867263_vguz9fdvir9.js',
+
+});
+
 
 const { Text, Link } = Typography;
 
@@ -95,7 +102,7 @@ const columns = [    {  title: 'Company Name',
 {   title: 'Contact Person',      dataIndex: 'contactPerson',      key: 'contactPerson',
  render: (contactPerson) => (
   <>  <p style={{margin: "0px 5px"}}><UserOutlined style={{ marginRight: "2px" }} /> {" " + contactPerson.name}</p>  <Divider style={{margin: "8px "}} type="horizontal" />  
-  <Link href={contactPerson.telegramUrl}><MessageOutlined /> {contactPerson.telegramUrl}   <Divider style={{margin: "8px "}} type="horizontal" /> 
+  <Link href={contactPerson.telegramUrl}><IconSet style={{marginRight: 6}} type="icon-telegram" /> {contactPerson.telegramUrl}   <Divider style={{margin: "8px "}} type="horizontal" /> 
   </Link>   
         <p ><PhoneOutlined /> {contactPerson.phoneNumber}</p>  
         </> 

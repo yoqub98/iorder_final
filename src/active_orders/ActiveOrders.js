@@ -7,6 +7,15 @@ import "firebase/compat/firestore";
 import {collection, deleteDoc, doc, getDocs, updateDoc, getFirestore,} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import moment from "moment";
+import { createFromIconfontCN } from '@ant-design/icons';
+
+const IconSet = createFromIconfontCN({
+  scriptUrl: '//at.alicdn.com/t/c/font_3867263_r3plqrq2iyj.js',
+
+});
+
+
+
 const { Text } = Typography;
 
 const firebaseConfig = {
@@ -78,31 +87,18 @@ function ActiveOrders() {
         return <Text>{record.total.toLocaleString()} сум</Text>
       },
     },
+  
     {
       title: "Статус",
       dataIndex: "status",
       render: (text, row, index) => (
-        <span>
-          <Badge status={row.status === "доставлено" ? "success" : "warning"} />{" "}
-          <Space size="large" />
-          <Text type={row.status === "доставлено" ? "success" : "warning"}>
-            {row.status}
-          </Text>
-       
-        </span>
-      ),
-    },
-    {
-      title: "Статус",
-      dataIndex: "status",
-      render: (text, row, index) => (
-          <Select style={{width:'140px'}} 
+          <Select  style={{width:'160px'}} 
               defaultValue={row.status}
               onChange={(value) => handleStatusChange(value, row.id)}
-          >
-              <Select.Option value="в процессе">в процессе</Select.Option>
-              <Select.Option value="доставлено">доставлено</Select.Option>
-              <Select.Option value="готов к отгрузке">готов к отгрузке</Select.Option>
+          > 
+              <Select.Option value="в процессе"> <IconSet style={{fontSize: 16, marginRight: 5}} type="icon-progress"/> в процессе</Select.Option>
+              <Select.Option  value="доставлено"> <IconSet style={{fontSize: 16, marginRight: 5}} type="icon-truck-completed_fill"/> доставлено</Select.Option>
+              <Select.Option   value="готов к отгрузке"><IconSet style={{fontSize: 16, marginRight: 7}} type="icon-delivery_line"/>готов к отгрузке</Select.Option>
           </Select>
       ),
   },
