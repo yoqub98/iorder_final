@@ -8,9 +8,9 @@ import {collection, deleteDoc, doc, getDocs, updateDoc, getFirestore,} from "fir
 import React, { useEffect, useState } from "react";
 import moment from "moment";
 import { createFromIconfontCN } from '@ant-design/icons';
-
+import './custom_styling.css'
 const IconSet = createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/c/font_3867263_r3plqrq2iyj.js',
+  scriptUrl: '//at.alicdn.com/t/c/font_3867263_vguz9fdvir9.js',
 
 });
 
@@ -92,11 +92,11 @@ function ActiveOrders() {
       title: "Статус",
       dataIndex: "status",
       render: (text, row, index) => (
-          <Select  style={{width:'160px'}} 
-              defaultValue={row.status}
-              onChange={(value) => handleStatusChange(value, row.id)}
+          <Select  style={{width:'160px', color: "#ff1438"}} 
+              defaultValue={row.status}  
+              onChange={(value) => handleStatusChange(value, row.id)} 
           > 
-              <Select.Option value="в процессе"> <IconSet style={{fontSize: 16, marginRight: 5}} type="icon-progress"/> в процессе</Select.Option>
+              <Select.Option value="в процессе"> <IconSet style={{fontSize: 16, marginRight: 5,  }} type="icon-progress"/> в процессе</Select.Option>
               <Select.Option  value="доставлено"> <IconSet style={{fontSize: 16, marginRight: 5}} type="icon-truck-completed_fill"/> доставлено</Select.Option>
               <Select.Option   value="готов к отгрузке"><IconSet style={{fontSize: 16, marginRight: 7}} type="icon-delivery_line"/>готов к отгрузке</Select.Option>
           </Select>

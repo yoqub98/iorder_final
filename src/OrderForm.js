@@ -57,7 +57,8 @@ function OrderForm () {
     price : 0,
     total : 0,
     status : "",
-    pay_status : ""
+    pay_status : "",
+    pay_type : "",
     
   })
 const [disabled, setDisabled] = useState(true);
@@ -172,7 +173,7 @@ const TotalCard = () => {
   return (
     <Card>
 
-      <Statistic title="Итого"  value={orderlist.total + " сум"} />
+      <Statistic title="Итого"  value={orderlist.total.toLocaleString() + " сум"} />
     </Card>
   );
 };
