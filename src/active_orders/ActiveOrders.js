@@ -33,7 +33,7 @@ const defaultFooter = () => "Here is footeer";
 
 function ActiveOrders() {
   const [orderstatus, setOrderStatus] = useState("");
-
+  const [filters, setFilters] = useState([]); // for filtering by product type ( get types from firestore)
   const columns = [
     {
       title: "Дата",
@@ -43,14 +43,12 @@ function ActiveOrders() {
         return <Text>{date}</Text>;
       },
       sorter: (a, b) => {
-        // Convert the date strings to Date objects
-        const dateA = new Date(moment(a.date).format("DD/MM/YYYY"));
-        const dateB = new Date(moment(b.date).format("DD/MM/YYYY"));
-        // Compare the dates and return a value that determines their order
-        if (dateA < dateB) return -1;
-        if (dateA > dateB) return 1;
+        // Compare the timestamps and return a value that determines their order
+        if (a.date < b.date) return 1;
+        if (a.date > b.date) return -1;
         return 0;
-      },
+    },
+    defaultSortOrder: "descend",
       defaultSortOrder: "descend",
     },
         {
@@ -61,14 +59,11 @@ function ActiveOrders() {
     {
       title: "Продукт",
       dataIndex: "product",
-      filters: [
-        { text: "Сашет-бел", value: "Сашет-бел" },
-        { text: "Сашет-корч", value: "Сашет-корч" },
-        { text: "Стик-корч", value: "Стик-корч" },
-        { text: "Стик-бел", value: "Стик-бел" },
-        { text: "Соль", value: "Соль" },
-      ],
-      onFilter: (value, record) => record.product === value,
+      filters : filters,
+      onFilter: (value, record) => record.product + record.product_type === value,
+      render: (text, record) => {
+        return <div><Text  >{record.product}</Text> <Text type="secondary"> ({record.product_type})</Text></div>
+      },
     },
     {
       title: "Количество",
@@ -192,14 +187,13 @@ function ActiveOrders() {
             id: doc.id
         }
     });
- 
-
-      
-      setOrders(newData);
+       setOrders(newData);
       console.log(newData)
       setLocalData(newData) // orders => data from firebase ( data here is  == local data )
       console.log(datalenght);
     });
+
+   
   };
   const [data, setLocalData] = useState([])
   const [bordered, setBordered] = useState(false);
@@ -220,13 +214,24 @@ function ActiveOrders() {
   const [orders, setOrders] = useState([]);
   const [datalenght, setLengh] = useState(0);
   useEffect(() => {
+     getDocs(collection(db, "products")).then((snapshot) => {
+      const products = snapshot.docs.map((doc) => doc.data());
+      setFilters(products.map((product) => ({ text: product.name + "(" +product.type +  ")", value: product.name + product.type})));
+      console.log(filters)
+    });
     setTimeout(() => {
+      
       setLoading(false);
     }, 2000);
+    
     fetchPost();
     setLengh(data.length);
+    
   }, []);
 
+ 
+
+  
   const scroll = {};
   if (yScroll) {
     scroll.y = 240;
