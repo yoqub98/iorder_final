@@ -96,7 +96,7 @@ function ActiveOrders() {
       title: "Статус",
       dataIndex: "status",
       render: (text, row, index) => (
-          <Select
+          <Select style={{width:'140px'}} 
               defaultValue={row.status}
               onChange={(value) => handleStatusChange(value, row.id)}
           >
