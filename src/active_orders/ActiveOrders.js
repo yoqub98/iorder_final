@@ -74,6 +74,9 @@ function ActiveOrders() {
       title: "Итого",
       dataIndex: "total",
       sorter: (a, b) => a.quantity - b.quantity,
+      render: (text, record) => {
+        return <Text>{record.total.toLocaleString()} сум</Text>
+      },
     },
     {
       title: "Статус",
@@ -213,6 +216,7 @@ function ActiveOrders() {
   const [xScroll, setXScroll] = useState(undefined);
   const [orders, setOrders] = useState([]);
   const [datalenght, setLengh] = useState(0);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   useEffect(() => {
      getDocs(collection(db, "products")).then((snapshot) => {
       const products = snapshot.docs.map((doc) => doc.data());
@@ -261,7 +265,10 @@ function ActiveOrders() {
     tableLayout,
   };
 
+  
+
  
+  
   
 
   for (let i = 0; i < datalenght; i++) {
@@ -273,6 +280,7 @@ function ActiveOrders() {
     <>
         <Spin size="large" spinning={loading}>
       <Table
+       rowKey={(record) => record.id}
         {...tableProps}
         pagination={{
           position: [top, bottom],
