@@ -172,7 +172,7 @@ const TotalCard = () => {
   return (
     <Card>
 
-      <Statistic title="Итого"  value={orderlist.total} />
+      <Statistic title="Итого"  value={orderlist.total + " сум"} />
     </Card>
   );
 };

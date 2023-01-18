@@ -1,10 +1,10 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Badge, Button, Modal, message, Space, Table, Typography } from "antd";
+import { Badge, Button, Modal, message, Space, Table, Typography, Select } from "antd";
 import { initializeApp } from "firebase/app";
 import { Spin } from 'antd';
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
-import {collection, deleteDoc, doc, getDocs, getFirestore,} from "firebase/firestore";
+import {collection, deleteDoc, doc, getDocs, updateDoc, getFirestore,} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import moment from "moment";
 const { Text } = Typography;
@@ -88,22 +88,24 @@ function ActiveOrders() {
           <Text type={row.status === "доставлено" ? "success" : "warning"}>
             {row.status}
           </Text>
+       
         </span>
       ),
     },
     {
       title: "Статус",
-      dataIndex: "pay_status",
+      dataIndex: "status",
       render: (text, row, index) => (
-        <span>
-          <Badge status={row.pay_status === "оплачено" ? "success" : "warning"} />{" "}
-          <Space size="large" />
-          <Text type={row.pay_status === "оплачено" ? "success" : "warning"}>
-            {row.pay_status}
-          </Text>
-        </span>
+          <Select
+              defaultValue={row.status}
+              onChange={(value) => handleStatusChange(value, row.id)}
+          >
+              <Select.Option value="в процессе">в процессе</Select.Option>
+              <Select.Option value="доставлено">доставлено</Select.Option>
+              <Select.Option value="готов к отгрузке">готов к отгрузке</Select.Option>
+          </Select>
       ),
-    },
+  },
     {
       title: "Action",
       key: "action",
@@ -138,6 +140,34 @@ function ActiveOrders() {
     console.log(id);
     deleteData(id);
   };
+
+  const handleStatusChange = async (value, id) => {
+ 
+
+
+    const db = getFirestore();
+    const docRef = doc(db, "orders", id);
+    const update_data = {
+      status: value
+    };
+    
+    updateDoc(docRef, update_data)
+      .then(() => {
+        message.success('Статус заказа успешно изменен');
+                      
+      })
+      .catch((error) => {
+        message.error("Произошла ошибка при изменении статуса заказа");
+        console.log(error);
+      });
+
+
+};
+
+
+
+
+
 
   const showDeleteConfirm = (id) => {
     Modal.confirm({
