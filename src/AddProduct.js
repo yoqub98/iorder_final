@@ -122,77 +122,75 @@ function AddProduct() {
 
   return (
    <div>
-    <Form>
-    <Form.Item >
-  <Row gutter={16}>
-    <Col span={12}>
-      <Form.Item label="Наименование продукта">
-        <Input
-          name="name"
-          value={product.name}
-          onChange={handleChange}
+ <Form>
+  <Form.Item>
+    <Row gutter={16}>
+      <Col span={12}>
+        <Form.Item label="Наименование продукта">
+          <Input
+            name="name"
+            value={product.name}
+            onChange={handleChange}
+          />
+        </Form.Item>
+      </Col>
+      <Col span={12}>
+        <Form.Item label="Цена">
+          <Input
+            name="price"
+            type="number"
+            value={product.price}
+            onChange={handleChange}
+          />
+        </Form.Item>
+      </Col>
+    </Row>
+  </Form.Item>
+  <Form.Item label="Категория">
+    <Row gutter={16}>
+      <Col span={8}>
+        <Select
+          style={{ width: 400 }}
+          placeholder="Выбрать категорию"
+          dropdownRender={(menu) => (
+            <>
+              {menu}
+              <Divider
+                style={{
+                  margin: '8px 0',
+                }}
+              />
+              <Space
+                style={{
+                  padding: '0 8px 4px',
+                }}
+              >
+                <Input
+                  placeholder="Наименование категории"
+                  value={newCategory}
+                  onChange={handleNewCategoryChange}
+                />
+                <Button color='primary' type="text" icon={<PlusOutlined />} onClick={addNewCategory}>
+                  Добавить категорию
+                </Button>
+              </Space>
+            </>
+          )}
+          options={productTypes.map((item) => ({
+            label: item.label,
+            value: item.key,
+          }))}
         />
-      </Form.Item>
-    </Col>
-    <Col span={12}>
-      <Form.Item label="Цена">
-        <Input
-          name="price"
-          type="number"
-          value={product.price}
-          onChange={handleChange}
-        />
-      </Form.Item>
-    </Col>
-  </Row>
-</Form.Item>
-      <Form.Item label="Категория">
-  <Row gutter={16}>
-    <Col span={8}>
-    <Select
-  style={{
-    width: 400, 
-  }}
-  placeholder="Выбрать категорию"
-  dropdownRender={(menu) => (
-    <>
-      {menu}
-      <Divider
-        style={{
-          margin: '8px 0',
-        }}
-      />
-      <Space
-        style={{
-          padding: '0 8px 4px',
-        }}
-      >
-        <Input
-          placeholder="Наименование категории"
-          value={newCategory}
-          onChange={handleNewCategoryChange}
-        />
-        <Button  type="text" icon={<PlusOutlined />} onClick={addNewCategory}>
-          Добавить категорию
-        </Button>
-      </Space>
-    </>
-  )}
-  options={productTypes.map((item) => ({
-    label: item.label,
-    value: item.key,
-  }))}
-/>
-    </Col>
-    <Col span={16}>
-      <Space>
-      <Button style={{marginLeft: 16, borderRadius: 18}} type="primary" onClick={handleSubmit}>Добавить Продукт</Button>
-      </Space>
-    </Col>
-  </Row>
-</Form.Item>
-     
-    </Form>
+      </Col>
+    </Row>
+  </Form.Item>
+  <Form.Item>
+    <Button style={{marginLeft: 16}} type="primary" onClick={handleSubmit}>
+      Добавить Продукт
+    </Button>
+  </Form.Item>
+</Form>
+
      <Spin size="large" spinning={loading}>
     <Product_types data = {saved_products} />
     </Spin>
