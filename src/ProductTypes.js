@@ -52,7 +52,7 @@ const Product_types = (props) => {
             <DeleteOutlined style={{ color: '#ff4d4f' }} key="ellipsis" onClick={() => showDeleteConfirm(item)} />,
           ]}>
            Цена : {item.price} сум/шт
-           <Meta style={{ marginTop: '12px' }} description={"Тип упаковки : " + " " + item.type}>
+           <Meta style={{ marginTop: '12px' }} description={"Категория : " + " " + item.type}>
            
            </Meta></Card>
         </Col>

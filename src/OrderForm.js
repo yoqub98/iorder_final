@@ -25,7 +25,7 @@ var db = firebase.firestore();
 async function handlePost (datalist, makeprice, product_name,product_categ) {
   const timestamp = firebase.firestore.Timestamp.fromDate(new Date( datalist.date));
     const data = {
-     date : timestamp,
+    date : timestamp,
     client : datalist.client,
     product: product_name,
     product_type : product_categ,
@@ -48,6 +48,7 @@ async function handlePost (datalist, makeprice, product_name,product_categ) {
 
 
 function OrderForm () {
+  
   const [orderlist, setOrderlist] = useState ({
     date : "",
     client : "", 
@@ -66,17 +67,28 @@ const [options, setOptions] = useState([]);
 const [product_name, SetProducName] = useState("")
 const [product_categ, SetProducCateg] = useState("")
 const [clientOptions, setClientOptions] = useState([]);
+
+
   useEffect(() => {
     const fetchData = async () => {
-      const productsRef = db.collection('products');
-      const productsSnapshot = await productsRef.get();
-      const products = productsSnapshot.docs.map(doc => doc.data());
-        const nestedOptions = products.reduce((acc, product) => {
-        const parent = product.type;
+      const productCategoriesRef = db.collection('product_categories');
+      const productCategoriesSnapshot = await productCategoriesRef.get();
+      const productCategories = productCategoriesSnapshot.docs.map(doc => doc.data());
+        const nestedOptions = productCategories.reduce((acc, category) => {
+        const parent = category.name;
         if (!acc[parent]) {
           acc[parent] = { value: parent, label: parent, children: [] };
         }
-        acc[parent].children.push({ value: product.name, label: product.name });
+        //Fetching products now
+        (async () => {
+          const productsRef = db.collection('products');
+          const productsSnapshot = await productsRef.get();
+          const products = productsSnapshot.docs.map(doc => doc.data());
+          const child = products.filter(product => product.type === parent)
+          child.forEach(childOption => {
+              acc[parent].children.push({ value: childOption.name, label: childOption.name });
+          })
+        })();
         return acc;
       }, {});
       Object.values(nestedOptions).forEach(parent => {
@@ -84,17 +96,17 @@ const [clientOptions, setClientOptions] = useState([]);
       });
       setOptions(Object.values(nestedOptions));
       const customersRef = db.collection('customers');
-        const customersSnapshot = await customersRef.get();
-        const customers = customersSnapshot.docs.map(doc => doc.data());
-        const companyNames = customers.map(customer => {
-            return { value: customer.companyName, label: customer.companyName };
-        });
-        setClientOptions(companyNames);
+const customersSnapshot = await customersRef.get();
+const customers = customersSnapshot.docs.map(doc => doc.data());
+const companyNames = customers.map(customer => {
+    return { value: customer.companyName, label: customer.companyName };
+});
+setClientOptions(companyNames);
     };
+
+
     fetchData();
   }, []);
-
-
 
 
 
@@ -228,8 +240,7 @@ const TotalCard = () => {
         </Form.Item>
    <Form.Item>
   
-    
-    
+      
     
     </Form.Item>
     <Form.Item>

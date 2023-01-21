@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './index.css';
-import { Form, Input,Modal, Button, Select, Row, Col, InputNumber , Spin} from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { Form, Input,Modal, Button, Select, Row, Divider, Space, Col, Spin} from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
@@ -21,24 +21,15 @@ const firebaseConfig = {
   appId: "1:257343919180:web:ffaa88ed28958ff04c90e9",
   measurementId: "G-89DK3S524X"
 };
-const product_types  =[
-    {
-      label: 'Стик',
-      key: '1',
-    },
-    {
-      label: 'Сашет',
-      key: '2',
-    },
-   
 
-  ];
 
 firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
 
 function AddProduct() {
   const [loading, setLoading] = useState(true);
+  const [productTypes, setProductTypes] = useState([]); // tip upakovki
+
   const [product, setProduct] = useState({
     name: "",
     price: 0,
@@ -47,7 +38,10 @@ function AddProduct() {
   });
 
   const [saved_products, setSavedProducts] = useState([]); 
-
+  const [newCategory, setNewCategory] = useState('');
+  const handleNewCategoryChange = (event) => {
+    setNewCategory(event.target.value);
+  }
   
   const handleChange = event => {
     setProduct({ ...product, [event.target.name]: event.target.value });
@@ -65,12 +59,24 @@ function AddProduct() {
       
     });
   }
+
+  const addNewCategory = (e) => {
+    e.preventDefault();
+    setProductTypes([...productTypes, {label: newCategory, key: newCategory}]);
+    setNewCategory('');
+    addNewCategoryToFirestore(newCategory);
+  };
+
+  const addNewCategoryToFirestore = async (newCategory) => {
+    await db.collection("product_categories").add({name: newCategory});
+  };
+  
   
    async function handleSubmit ()  {
    
     console.log("worked")
     
-    const res = await db.collection('products').add(product, {merge:true}).then(() => {
+    await db.collection('products').add(product, {merge:true}).then(() => {
         successModal() 
     fetchInfo();     })
       .catch((error) => {
@@ -81,9 +87,13 @@ function AddProduct() {
   async function fetchInfo ()  {
     await getDocs(collection(db, "products")).then((querySnapshot) => {
       setLoading(false)
+      
       const newData = querySnapshot.docs.map((doc) => ({
+
+        
         ...doc.data(),
         id: doc.id,
+        
       }));
      
       console.log(newData)
@@ -96,9 +106,20 @@ function AddProduct() {
     setTimeout(() => {
       setLoading(false);
     }, 2000);
-    fetchInfo();
- 
-  }, []);
+    fetchInfo(); // Fetch saved products
+    db.collection("product_categories").get()
+    .then(querySnapshot => {
+      let productTypesData = []
+      querySnapshot.forEach(doc => {
+        productTypesData.push({
+          label: doc.data().name,
+          key: doc.id,
+        });
+      });
+      setProductTypes(productTypesData);
+    });
+  }, []); 
+
   return (
    <div>
     <Form>
@@ -125,19 +146,48 @@ function AddProduct() {
     </Col>
   </Row>
 </Form.Item>
-      <Form.Item label="Тип упаковки">
+      <Form.Item label="Категория">
   <Row gutter={16}>
     <Col span={8}>
-      <Select
-       onChange={(value) => setProduct({ ...product, type: value })}
+    <Select
+  style={{
+    width: 400, 
+  }}
+  placeholder="Выбрать категорию"
+  dropdownRender={(menu) => (
+    <>
+      {menu}
+      <Divider
+        style={{
+          margin: '8px 0',
+        }}
+      />
+      <Space
+        style={{
+          padding: '0 8px 4px',
+        }}
       >
-        {product_types.map(type => (
-          <Select.Option  name="type"   key={type.key} value={type.label}>{type.label}</Select.Option>
-        ))}
-      </Select>
+        <Input
+          placeholder="Наименование категории"
+          value={newCategory}
+          onChange={handleNewCategoryChange}
+        />
+        <Button  type="text" icon={<PlusOutlined />} onClick={addNewCategory}>
+          Добавить категорию
+        </Button>
+      </Space>
+    </>
+  )}
+  options={productTypes.map((item) => ({
+    label: item.label,
+    value: item.key,
+  }))}
+/>
     </Col>
-    <Col span={8}>
-      <Button type="primary" onClick={handleSubmit}>Add Product</Button>
+    <Col span={16}>
+      <Space>
+      <Button style={{marginLeft: 16, borderRadius: 18}} type="primary" onClick={handleSubmit}>Добавить Продукт</Button>
+      </Space>
     </Col>
   </Row>
 </Form.Item>
