@@ -62,11 +62,14 @@ function Inventory() {
     setVisible(false);
   };
 
+
   const handleCreate = () => {
     form
       .validateFields()
       .then((values) => {
         form.resetFields();
+        // convert quantity to a number before posting to Firestore
+        values.quantity = parseFloat(values.quantity);
         firebase
           .firestore()
           .collection('inventory')
@@ -83,6 +86,8 @@ function Inventory() {
       .validateFields()
       .then((values) => {
         form.resetFields();
+        // convert quantity to a number before posting to Firestore
+        values.quantity = parseFloat(values.quantity);
         firebase
           .firestore()
           .collection('inventory')

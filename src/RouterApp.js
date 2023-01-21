@@ -1,26 +1,50 @@
 import { BarsOutlined, CodeSandboxOutlined,PlusSquareOutlined, FileAddOutlined, DashboardOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 
 import Icon from '@ant-design/icons/lib/components/Icon';
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Badge } from 'antd';
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Link, Route, Routes, useLocation } from 'react-router-dom';
 import ActiveOrders from './active_orders/ActiveOrders';
 import Inventory from './Inventory';
-import OrderForm from './OrderForm';
+import OrderForm from './OrderForm'; 
 import AddProduct from './AddProduct';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 import Dashboard from './dashboard/Dashboard';
 import AddCustomer
  from './AddCustomer';
 const { Header, Content, Footer, Sider } = Layout;
+const firebaseConfig = {
+   apiKey: "AIzaSyCEsm2uX4Ott4vxlH-K_p25xnYPShXv6FI",
+   authDomain: "biflow-efa49.firebaseapp.com",
+   databaseURL: "https://biflow-efa49-default-rtdb.europe-west1.firebasedatabase.app",
+   projectId: "biflow-efa49",
+   storageBucket: "biflow-efa49.appspot.com",
+   messagingSenderId: "257343919180",
+   appId: "1:257343919180:web:ffaa88ed28958ff04c90e9",
+   measurementId: "G-89DK3S524X"
+ }; 
 
+ firebase.initializeApp(firebaseConfig);
+ var db = firebase.firestore(); 
 
 class RouterApp extends Component {
    state = {
       collapsed: false,
-   
+      outOfStock: false
         };
 
-      
+   componentDidMount() {
+      db.collection('inventory').onSnapshot((snapshot) => {
+             snapshot.docs.forEach((doc) => {
+               if (doc.data().quantity === 0) {
+                 this.setState({outOfStock: true});
+                 return; // once you find one item with quantity 0, you don't have to continue the loop
+               }
+             });
+           });
+        }
   
 
    onCollapse = collapsed => {
@@ -57,11 +81,15 @@ class RouterApp extends Component {
                         <span>Активные заказы</span>
                         <Link to='/active_orders' />
                      </Menu.Item>
+                    
                      <Menu.Item key='3'>
+                        
                         <CodeSandboxOutlined style={{ fontSize: '18px' }} />
                         <span>Инвентарь</span>
+                        <Badge style={{backgroundColor: 'red'}} dot={this.state.outOfStock}/>
                         <Link to='/inventory' />
                      </Menu.Item>
+                   
                      <Menu.Item key='4'>
                      <PlusSquareOutlined  style={{ fontSize: '18px' }} />
                         <span>Добавить продукт</span>
