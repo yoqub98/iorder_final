@@ -1,4 +1,4 @@
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, CheckCircleOutlined, ExclamationCircleOutlined} from "@ant-design/icons";
 import { Badge, Button, Modal, message, Space, Table, Typography, Select } from "antd";
 import { initializeApp } from "firebase/app";
 import { Spin } from 'antd';
@@ -57,13 +57,13 @@ function ActiveOrders() {
         if (a.date > b.date) return -1;
         return 0;
     },
-    defaultSortOrder: "descend",
+   
       defaultSortOrder: "descend",
     },
         {
       title: "Заказчик",
       dataIndex: "client",
-      sorter: (a, b) => a.title - b.title,
+      sorter: (a, b) => a.client - b.client,
     },
     {
       title: "Продукт",
@@ -84,10 +84,18 @@ function ActiveOrders() {
       dataIndex: "total",
       sorter: (a, b) => a.quantity - b.quantity,
       render: (text, record) => {
-        return <Text>{record.total.toLocaleString()} сум</Text>
+        return (
+          <div>
+            {record.pay_status === "не оплачено" ? (
+              <ExclamationCircleOutlined style={{ marginRight: "5px", color:"red"}} />
+            ) : (
+              <CheckCircleOutlined style={{ marginRight: "5px", color: "green"}} />
+            )}
+            <Text>{record.total.toLocaleString()} сум</Text>
+          </div>
+        );
       },
     },
-  
     {
       title: "Статус",
       dataIndex: "status",
@@ -130,6 +138,7 @@ function ActiveOrders() {
         </Space>
       ),
     },
+    
   ];
 
   const handleDelete = (id) => {
