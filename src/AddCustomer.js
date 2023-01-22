@@ -1,16 +1,15 @@
 import React, { useState, useEffect} from 'react';
 import './Customerpage_stlying.css'
 import { Form, Input, Button, Table, message, Modal, Divider } from 'antd';
-import Icon, { PlusCircleOutlined } from '@ant-design/icons';
+import Icon, { EnvironmentOutlined,PhoneOutlined, MailOutlined, UserOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import firebase from 'firebase/compat/app';
-import { UserOutlined, MessageOutlined, PhoneOutlined} from '@ant-design/icons';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import { Typography } from 'antd';
 import { createFromIconfontCN } from '@ant-design/icons';
 
 const IconSet = createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/c/font_3867263_vguz9fdvir9.js',
+  scriptUrl: '//at.alicdn.com/t/c/font_3867263_dgojwc1pnnm.js',
 
 });
 
@@ -121,22 +120,22 @@ const columns = [    {  title: 'Company Name',
 >
       <Form onFinish={handleSubmit}>
         <Form.Item label="Company Name">
-          <Input name="companyName" value={formData.companyName} onChange={handleInputChange} />
+          <Input prefix={<IconSet  type="icon-company" />} name="companyName" value={formData.companyName} onChange={handleInputChange} />
         </Form.Item>
         <Form.Item label="Address">
-          <Input name="address" value={formData.address} onChange={handleInputChange} />
+          <Input  name="address" prefix={<EnvironmentOutlined style={{color:"#8c8c8c"}}/>} value={formData.address} onChange={handleInputChange} />
         </Form.Item>
         <Form.Item label="Email">
-          <Input name="email" value={formData.email} onChange={handleInputChange} />
+          <Input name="email"prefix={<MailOutlined style={{color:"#8c8c8c"}}/>} value={formData.email} onChange={handleInputChange} />
         </Form.Item>
         <Form.Item label="Contact Person Name">
-          <Input name="name" value={formData.contactPerson.name} onChange={handleContactInputChange} />
+          <Input prefix={<UserOutlined style={{color:"#8c8c8c"}}/>} name="name" value={formData.contactPerson.name} onChange={handleContactInputChange} />
         </Form.Item>
         <Form.Item label="Contact Person Telegram">
-          <Input name="telegramUrl" value={formData.contactPerson.telegramUrl} onChange={handleContactInputChange} />
+          <Input name="telegramUrl" style={{color:"#8c8c8c"}} prefix={<IconSet type="icon-telegram1" />} value={formData.contactPerson.telegramUrl} onChange={handleContactInputChange} />
           </Form.Item>
           <Form.Item label="Contact Person Phone">
-            <Input name="phoneNumber" value={formData.contactPerson.phoneNumber} onChange={handleContactInputChange} />
+            <Input prefix={<PhoneOutlined style={{color:"#8c8c8c"}}/>} name="phoneNumber" value={formData.contactPerson.phoneNumber} onChange={handleContactInputChange} />
           </Form.Item>
           <Form.Item>
           

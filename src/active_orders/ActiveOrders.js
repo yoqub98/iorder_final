@@ -10,7 +10,7 @@ import moment from "moment";
 import { createFromIconfontCN } from '@ant-design/icons';
 import './custom_styling.css'
 const IconSet = createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/c/font_3867263_vguz9fdvir9.js',
+  scriptUrl: '//at.alicdn.com/t/c/font_3867263_dgojwc1pnnm.js',
 
 });
 
