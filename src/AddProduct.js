@@ -22,6 +22,7 @@ const firebaseConfig = {
   measurementId: "G-89DK3S524X"
 };
 
+/* TEST */
 
 firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
