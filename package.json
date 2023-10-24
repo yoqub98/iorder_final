@@ -48,7 +48,7 @@
     ]
   },
   "devDependencies": {
-    "@craco/craco": "^7.0.0",
+    "@craco/craco": "^7.1.0",
     "file-loader": "^6.2.0",
     "web": "^0.0.2",
     "webpack-cli": "^5.0.1"

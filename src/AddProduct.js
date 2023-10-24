@@ -22,14 +22,14 @@ const firebaseConfig = {
   measurementId: "G-89DK3S524X"
 };
 
-/* TEST */
+
 
 firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
 
 function AddProduct() {
   const [loading, setLoading] = useState(true);
-  const [productTypes, setProductTypes] = useState([]); // tip upakovki
+  const [productTypes, setProductTypes] = useState([]); 
 
   const [product, setProduct] = useState({
     name: "",
@@ -44,9 +44,20 @@ function AddProduct() {
     setNewCategory(event.target.value);
   }
   
-  const handleChange = event => {
-    setProduct({ ...product, [event.target.name]: event.target.value });
+  const handleChange = (event) => {
+    if (event.target.name === 'type') {
+      setProduct((prevProduct) => ({
+        ...prevProduct,
+        type: event.target.value, // Use the key of the selected category
+      }));
+    } else {
+      setProduct((prevProduct) => ({
+        ...prevProduct,
+        [event.target.name]: event.target.value,
+      }));
+    }
   };
+  
 
  
   function successModal() {
@@ -73,17 +84,25 @@ function AddProduct() {
   };
   
   
-   async function handleSubmit ()  {
-   
-    console.log("worked")
-    
-    await db.collection('products').add(product, {merge:true}).then(() => {
-        successModal() 
-    fetchInfo();     })
-      .catch((error) => {
-        console.log(error);
-      });;
-  };
+  async function handleSubmit() {
+    // Retrieve the selected product category
+    const selectedProductCategory = product.type;
+  
+    // Create a new product object with updated 'type' field
+    const newProduct = {
+      ...product,
+      type: selectedProductCategory,
+    };
+  
+    // Add the newProduct to Firestore
+    await db.collection('products').add(newProduct, { merge: true }).then(() => {
+      successModal();
+      fetchInfo();
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+  
 
   async function fetchInfo ()  {
     await getDocs(collection(db, "products")).then((querySnapshot) => {
@@ -150,38 +169,45 @@ function AddProduct() {
   <Form.Item label="Категория">
     <Row gutter={16}>
       <Col span={8}>
-        <Select
-          style={{ width: 400 }}
-          placeholder="Выбрать категорию"
-          dropdownRender={(menu) => (
-            <>
-              {menu}
-              <Divider
-                style={{
-                  margin: '8px 0',
-                }}
-              />
-              <Space
-                style={{
-                  padding: '0 8px 4px',
-                }}
-              >
-                <Input
-                  placeholder="Наименование категории"
-                  value={newCategory}
-                  onChange={handleNewCategoryChange}
-                />
-                <Button color='primary' type="text" icon={<PlusOutlined />} onClick={addNewCategory}>
-                  Добавить категорию
-                </Button>
-              </Space>
-            </>
-          )}
-          options={productTypes.map((item) => ({
-            label: item.label,
-            value: item.key,
-          }))}
+      <Select
+  style={{ width: 400 }}
+  placeholder="Choose a category"
+  value={product.type} // Set the selected value based on product.type
+  onChange={(value) => handleChange({ target: { name: 'type', value } })} // Update product.type on change
+  dropdownRender={(menu) => (
+    <>
+      {menu}
+      <Divider
+        style={{
+          margin: '8px 0',
+        }}
+      />
+      <Space
+        style={{
+          padding: '0 8px 4px',
+        }}
+      >
+        <Input
+          placeholder="Category Name"
+          value={newCategory}
+          onChange={handleNewCategoryChange}
         />
+        <Button
+          color="primary"
+          type="text"
+          icon={<PlusOutlined />}
+          onClick={addNewCategory}
+        >
+          Add Category
+        </Button>
+      </Space>
+    </>
+  )}
+  options={productTypes.map((item) => ({
+    label: item.label,
+    value: item.label, // Use 'key' as the 'value'
+  }))}
+/>
       </Col>
     </Row>
   </Form.Item>

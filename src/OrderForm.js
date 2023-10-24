@@ -69,44 +69,48 @@ const [product_categ, SetProducCateg] = useState("")
 const [clientOptions, setClientOptions] = useState([]);
 
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const productCategoriesRef = db.collection('product_categories');
-      const productCategoriesSnapshot = await productCategoriesRef.get();
-      const productCategories = productCategoriesSnapshot.docs.map(doc => doc.data());
-        const nestedOptions = productCategories.reduce((acc, category) => {
-        const parent = category.name;
-        if (!acc[parent]) {
-          acc[parent] = { value: parent, label: parent, children: [] };
-        }
-        //Fetching products now
-        (async () => {
-          const productsRef = db.collection('products');
-          const productsSnapshot = await productsRef.get();
-          const products = productsSnapshot.docs.map(doc => doc.data());
-          const child = products.filter(product => product.type === parent)
-          child.forEach(childOption => {
-              acc[parent].children.push({ value: childOption.name, label: childOption.name });
-          })
-        })();
-        return acc;
-      }, {});
-      Object.values(nestedOptions).forEach(parent => {
-        parent.children.sort((a, b) => a.value.localeCompare(b.value));
-      });
-      setOptions(Object.values(nestedOptions));
-      const customersRef = db.collection('customers');
-const customersSnapshot = await customersRef.get();
-const customers = customersSnapshot.docs.map(doc => doc.data());
-const companyNames = customers.map(customer => {
-    return { value: customer.companyName, label: customer.companyName };
-});
-setClientOptions(companyNames);
-    };
+useEffect(() => {
+  const fetchData = async () => {
+    const productCategoriesRef = db.collection('product_categories');
+    const productCategoriesSnapshot = await productCategoriesRef.get();
+    const productCategories = productCategoriesSnapshot.docs.map(doc => doc.data());
 
+    // Fetching products for each category
+    const fetchProductsPromises = productCategories.map(async (category) => {
+      const productsRef = db.collection('products');
+      const productsSnapshot = await productsRef.get();
+      const products = productsSnapshot.docs.map(doc => doc.data());
+      const childOptions = products.filter(product => product.type === category.name).map(product => ({
+        value: product.name,
+        label: product.name
+      }));
+      return { parent: category.name, children: childOptions };
+    });
 
-    fetchData();
-  }, []);
+    // Wait for all fetch operations to complete
+    const nestedOptions = await Promise.all(fetchProductsPromises);
+
+    // Create options object with parent and children properties
+    const options = nestedOptions.reduce((acc, option) => {
+      acc.push({ value: option.parent, label: option.parent, children: option.children });
+      return acc;
+    }, []);
+
+    setOptions(options);
+
+    // Fetch client options
+    const customersRef = db.collection('customers');
+    const customersSnapshot = await customersRef.get();
+    const customers = customersSnapshot.docs.map(doc => doc.data());
+    const companyNames = customers.map(customer => ({
+      value: customer.companyName,
+      label: customer.companyName
+    }));
+    setClientOptions(companyNames);
+  };
+
+  fetchData();
+}, []);
 
 
 
