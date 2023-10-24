@@ -69,7 +69,8 @@ function ActiveOrders() {
 
     // Function to handle the "Delete All" button click
     const handleDeleteAll = () => {
-      console.log(selectedRowKeys); // Add this line to check selectedRowKeys
+      console.log(selectedRowKeys); // Verify that selectedRowKeys contains the correct order IDs
+    
       // Show a confirmation modal
       Modal.confirm({
         title: 'Delete Selected Orders',
@@ -77,11 +78,11 @@ function ActiveOrders() {
         okText: 'Yes',
         okType: 'danger',
         cancelText: 'No',
-        onOk: () => {
-          // Delete selected orders
-          selectedRowKeys.forEach((id) => {
-            deleteData(id);
-          });
+        onOk: async () => {
+          // Loop through selectedRowKeys and delete each order
+          for (const id of selectedRowKeys) {
+            await deleteData(id);
+          }
           setSelectedRowKeys([]); // Clear selected rows
         },
       });
