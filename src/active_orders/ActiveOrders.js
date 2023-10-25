@@ -6,6 +6,7 @@ import { DeleteOutlined, EditOutlined, CheckCircleOutlined, ExclamationCircleOut
 import { Badge, Button, Modal, message, Space, Table, Typography, Select } from "antd";
 import { Spin } from 'antd';
 import { createFromIconfontCN } from '@ant-design/icons';
+import EditOrderModal from './EditOrderModal';
 import './custom_styling.css';
 
 // Initialize Firebase app
@@ -59,7 +60,8 @@ function ActiveOrders() {
   const [orders, setOrders] = useState([]);
   const [datalength, setLength] = useState(0);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [orderToEdit, setOrderToEdit] = useState(null);
 
   // Function to handle selection changes
   const onSelectChange = (selectedRowKeys) => {
@@ -86,6 +88,16 @@ function ActiveOrders() {
           setSelectedRowKeys([]); // Clear selected rows
         },
       });
+    };
+
+    // Editing order 
+    const handleEdit = (id) => {
+      // Find the order to edit from your orders list
+      const order = orders.find((order) => order.id === id);
+      if (order) {
+        setOrderToEdit(order);
+        setEditModalVisible(true);
+      }
     };
   
 
@@ -169,7 +181,7 @@ function ActiveOrders() {
           />
           <Space>
             <Button
-              onClick={() => handleDelete(row.id)}
+              onClick={() => handleEdit(row.id)}
               icon={<EditOutlined style={{ fontSize: "16px", color: "black" }} />}
               type="text"
             />
@@ -321,8 +333,21 @@ function ActiveOrders() {
           dataSource={hasData ? data : []}
           scroll={scroll}
         />
+        
       </Spin>
+      {editModalVisible && (
+  <EditOrderModal
+    order={orderToEdit}
+    visible={editModalVisible}
+    onCancel={() => setEditModalVisible(false)}
+    onUpdate={(updatedOrder) => {
+      // Handle order update in Firestore
+      setEditModalVisible(false);
+    }}
+  />
+)}
     </>
+    
   );
 }
 
