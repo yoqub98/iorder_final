@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, Button } from 'antd';
+import {} from 'antd';
+import { Radio,  Modal, Cascader, InputNumber, Form, Input, Button,  Select } from "antd";
 
 function EditOrderModal({ order, visible, onCancel, onUpdate }) {
   const [form] = Form.useForm();
@@ -10,6 +11,12 @@ function EditOrderModal({ order, visible, onCancel, onUpdate }) {
       form.setFieldsValue({
         date: order.date,
         client: order.client,
+        product: order.product,
+        quantity: order.quantity,
+        total: order.total,
+        status: order.status,
+        pay_status: order.pay_status,
+
         // ... other fields ...
       });
     }
@@ -42,6 +49,8 @@ function EditOrderModal({ order, visible, onCancel, onUpdate }) {
       <Button type="primary" onClick={handleUpdate}>
         Update
       </Button>
+
+      
     </Modal>
   );
 }
