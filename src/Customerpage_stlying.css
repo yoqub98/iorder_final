@@ -1,3 +1,17 @@
 .bordered-table-tr {
     border: 1px solid rgb(212, 0, 0);
 }
+
+/* CSS inside your component (AddCustomer.js) */
+.custom-modal {
+    .ant-modal-content {
+      background-color: #ffffff  !important; /* Light gray background color */
+    }
+    .ant-modal-header {
+      border-bottom: 1px solid #c4c4c4; /* Add a border to the header */
+      padding: 16px 24px; /* Adjust header padding as needed */
+    }
+    .ant-modal-body {
+      padding: 24px; /* Add margin between header and body */
+    }
+  }

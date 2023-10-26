@@ -56,7 +56,7 @@ const AddCustomer = () => {
       ...formData,
       contactPerson: {
         ...formData.contactPerson,
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value.replace(/[^a-zA-Z0-9_]/g, '') // Remove unwanted characters
       }
     });
   }
@@ -98,14 +98,28 @@ const columns = [    {  title: 'Company Name',
    dataIndex: 'companyName',  key: 'companyName', render: (text, record) => <Text strong style={{ color: '#1890ff' }}>{text}</Text>,   },    
 {   title: 'Address',     dataIndex: 'address',      key: 'address',    },    
 {   title: 'Email',      dataIndex: 'email',      key: 'email',    },    
-{   title: 'Contact Person',      dataIndex: 'contactPerson',      key: 'contactPerson',
- render: (contactPerson) => (
-  <>  <p style={{margin: "0px 5px"}}><UserOutlined style={{ marginRight: "2px" }} /> {" " + contactPerson.name}</p>  <Divider style={{margin: "8px "}} type="horizontal" />  
-  <Link href={contactPerson.telegramUrl}><IconSet style={{marginRight: 6}} type="icon-telegram" /> {contactPerson.telegramUrl}   <Divider style={{margin: "8px "}} type="horizontal" /> 
-  </Link>   
-        <p ><PhoneOutlined /> {contactPerson.phoneNumber}</p>  
-        </> 
-         )  }, ];
+{
+  title: 'Contact Person',
+  dataIndex: 'contactPerson',
+  key: 'contactPerson',
+  render: (contactPerson) => (
+    <>
+      <p style={{ margin: "0px 5px" }}>
+        <UserOutlined style={{ marginRight: "2px" }} /> {" " + contactPerson.name}
+      </p>
+      <Divider style={{ margin: "8px " }} type="horizontal" />
+      <a
+        href={`https://t.me/${contactPerson.telegramUrl}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <IconSet style={{ marginRight: 6 }} type="icon-telegram" /> {`https://t.me/${contactPerson.telegramUrl}`}
+      </a>
+      <Divider style={{ margin: "8px " }} type="horizontal" />
+      <p><PhoneOutlined /> {contactPerson.phoneNumber}</p>
+    </>
+  ),
+}, ];
 
   return (
     <div>
@@ -117,6 +131,8 @@ const columns = [    {  title: 'Company Name',
   open={visible}
   onOk={handleSubmit}
   onCancel={() => setVisible(false)}
+  className="custom-modal"
+
 >
       <Form onFinish={handleSubmit}>
         <Form.Item label="Company Name">
@@ -132,10 +148,10 @@ const columns = [    {  title: 'Company Name',
           <Input prefix={<UserOutlined style={{color:"#8c8c8c"}}/>} name="name" value={formData.contactPerson.name} onChange={handleContactInputChange} />
         </Form.Item>
         <Form.Item label="Contact Person Telegram">
-          <Input name="telegramUrl" style={{color:"#8c8c8c"}} prefix={<IconSet type="icon-telegram1" />} value={formData.contactPerson.telegramUrl} onChange={handleContactInputChange} />
+          <Input name="telegramUrl" style={{color:"#8c8c8c"}} prefix={<IconSet type="icon-telegram1" />} value={formData.contactPerson.telegramUrl} onChange={handleContactInputChange}  addonBefore="https://t.me/" />
           </Form.Item>
           <Form.Item label="Contact Person Phone">
-            <Input prefix={<PhoneOutlined style={{color:"#8c8c8c"}}/>} name="phoneNumber" value={formData.contactPerson.phoneNumber} onChange={handleContactInputChange} />
+            <Input prefix={<PhoneOutlined style={{color:"#8c8c8c"}}/>} name="phoneNumber" value={formData.contactPerson.phoneNumber} addonBefore="+998" onChange={handleContactInputChange} />
           </Form.Item>
           <Form.Item>
           
