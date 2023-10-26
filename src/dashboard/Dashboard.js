@@ -6,6 +6,7 @@ import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import SalesCard from "./SalesCard";
 import SalesData from "./SalesGraph";
+import PieChartByProduct from "./PieChartByProduct";
 const firebaseConfig = {
     apiKey: "AIzaSyCEsm2uX4Ott4vxlH-K_p25xnYPShXv6FI",
     authDomain: "biflow-efa49.firebaseapp.com",
@@ -29,6 +30,7 @@ const Dashboard =()=> {
     size="large">
    <SalesCard/> 
      <SalesData/>
+   
    </Space>
    
    )
